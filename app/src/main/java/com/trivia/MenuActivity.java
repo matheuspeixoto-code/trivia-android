@@ -1,6 +1,7 @@
 
 package com.trivia;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -27,6 +28,18 @@ public class MenuActivity extends AppCompatActivity {
         String nomeJogador = getIntent().getStringExtra("nome_jogador");
 
         txtBoasVindas.setText("Bem-vindo, " + nomeJogador + "!");
+
+
+        btnJogar.setOnClickListener(view ->{
+            Intent intent = new Intent(
+                    MenuActivity.this,
+                    ConfiguracaoActivity.class
+                    );
+
+            intent.putExtra("nome_jogador", getIntent().getStringExtra("nome_jogador"));
+
+            startActivity(intent);
+        });
     }
 
     @Override
