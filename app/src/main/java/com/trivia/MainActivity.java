@@ -9,6 +9,8 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.trivia.database.TesteBancoDados;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "CicloDeVida_MainActivity";
@@ -20,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        TesteBancoDados.executar(this);
 
         Log.d(TAG, "onCreate() chamado");
 
