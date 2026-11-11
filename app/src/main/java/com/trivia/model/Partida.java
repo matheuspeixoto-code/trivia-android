@@ -1,8 +1,10 @@
+
 package com.trivia.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Partida {
+public class Partida implements Serializable {
 
     private long id;
     private Jogador jogador;
@@ -10,10 +12,12 @@ public class Partida {
     private int pontuacao;
     private int quantidadeAcertos;
     private int quantidadeErros;
+    private int tempoPorQuestao;
+    private int indiceQuestaoAtual;
 
     public Partida(long id, Jogador jogador, List<Questao> questoes,
                    int pontuacao, int quantidadeAcertos,
-                   int quantidadeErros) {
+                   int quantidadeErros, int tempoPorQuestao) {
 
         this.id = id;
         this.jogador = jogador;
@@ -21,6 +25,8 @@ public class Partida {
         this.pontuacao = pontuacao;
         this.quantidadeAcertos = quantidadeAcertos;
         this.quantidadeErros = quantidadeErros;
+        this.tempoPorQuestao = tempoPorQuestao;
+        this.indiceQuestaoAtual = 0;
     }
 
     public long getId() {
@@ -69,5 +75,17 @@ public class Partida {
 
     public void setQuantidadeErros(int quantidadeErros) {
         this.quantidadeErros = quantidadeErros;
+    }
+
+    public int getTempoPorQuestao() {
+        return tempoPorQuestao;
+    }
+
+    public int getIndiceQuestaoAtual() {
+        return indiceQuestaoAtual;
+    }
+
+    public void avancarQuestao() {
+        indiceQuestaoAtual++;
     }
 }
