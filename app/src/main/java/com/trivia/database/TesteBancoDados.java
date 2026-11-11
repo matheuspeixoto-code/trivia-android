@@ -57,7 +57,7 @@ public class TesteBancoDados {
                         String resposta =
                                 cursor.getString(indiceResposta);
 
-                        // 3. Exibir o resultado
+
                         Log.i(TAG, "Questão encontrada: " + enunciado);
                         Log.i(TAG, "Resposta correta: " + resposta);
 

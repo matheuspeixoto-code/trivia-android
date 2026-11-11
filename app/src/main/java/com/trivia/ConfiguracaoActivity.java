@@ -17,6 +17,11 @@ import com.trivia.model.CategoriasResponse;
 import com.trivia.retrofit.RetrofitCategoria;
 import com.trivia.utils.ConfiguracaoUtils;
 
+import android.widget.TextView;
+import android.widget.Toast;
+import com.trivia.model.QuestoesResponse;
+import com.trivia.model.QuestaoApi;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
@@ -34,6 +39,8 @@ public class ConfiguracaoActivity extends AppCompatActivity
     private LinearLayout layoutConfiguracao;
     private Spinner spDificuldade;
     private Spinner spTipo;
+
+    private TextView txtTempo;
 
     private Spinner spCategoria;
     private EditText edtQuantidade;
@@ -53,6 +60,10 @@ public class ConfiguracaoActivity extends AppCompatActivity
         seekTempo = findViewById(R.id.seekTempo);
         btnIniciarPartida = findViewById(R.id.btnIniciarPartida);
         spCategoria = findViewById(R.id.spCategoria);
+
+        txtTempo = findViewById(R.id.txtTempo);
+
+        configurarTempo();
 
         configurarDificuldade();
         configurarTipo();
@@ -186,6 +197,15 @@ public class ConfiguracaoActivity extends AppCompatActivity
         Log.d(TAG, "Quantidade: " + quantidade);
         Log.d(TAG, "Tempo por questão: " + tempo);
         Log.d(TAG, "Categoria: " + categoriaId);
+
+        if (spCategoria.getSelectedItem() == null) {
+            Toast.makeText(this,
+                    "Aguarde o carregamento das categorias.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        buscarQuestoes(quantidade, categoriaId, dificuldade, tipo);
     }
 
 
@@ -259,5 +279,134 @@ public class ConfiguracaoActivity extends AppCompatActivity
             }
         });
     }
+
+
+    private void buscarQuestoes(
+            int quantidade,
+            Integer categoriaId,
+            String dificuldade,
+            String tipo) {
+
+        btnIniciarPartida.setEnabled(false);
+
+        ApiService api = RetrofitCategoria.getApiService();
+
+        Call<QuestoesResponse> chamada = api.buscarQuestoes(
+                quantidade,
+                categoriaId,
+                dificuldade,
+                tipo
+        );
+
+        chamada.enqueue(new Callback<QuestoesResponse>() {
+
+            @Override
+            public void onResponse(
+                    Call<QuestoesResponse> call,
+                    Response<QuestoesResponse> response) {
+
+                btnIniciarPartida.setEnabled(true);
+
+                if (!response.isSuccessful() || response.body() == null) {
+                    Toast.makeText(
+                            ConfiguracaoActivity.this,
+                            "Erro ao buscar questões.",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                    Log.e(TAG, "Erro HTTP: " + response.code());
+                    return;
+                }
+
+                QuestoesResponse resultado = response.body();
+
+                if (resultado.getCodigoResposta() != 0
+                        || resultado.getQuestoes() == null
+                        || resultado.getQuestoes().isEmpty()) {
+
+                    Toast.makeText(
+                            ConfiguracaoActivity.this,
+                            "Não foi possível encontrar questões para essa configuração.",
+                            Toast.LENGTH_LONG
+                    ).show();
+
+                    Log.e(TAG, "Código da API: "
+                            + resultado.getCodigoResposta());
+                    return;
+                }
+
+                List<QuestaoApi> questoes = resultado.getQuestoes();
+
+                Log.d(TAG, "Questões recebidas: " + questoes.size());
+
+                QuestaoApi primeiraQuestao = questoes.get(0);
+
+                Log.d(TAG, "Enunciado: "
+                        + primeiraQuestao.getEnunciado());
+
+                Log.d(TAG, "Resposta correta: "
+                        + primeiraQuestao.getRespostaCorreta());
+
+                Log.d(TAG, "Respostas incorretas: "
+                        + primeiraQuestao.getRespostasIncorretas());
+
+                Toast.makeText(
+                        ConfiguracaoActivity.this,
+                        "Questões carregadas com sucesso!",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+
+            @Override
+            public void onFailure(
+                    Call<QuestoesResponse> call,
+                    Throwable t) {
+
+                btnIniciarPartida.setEnabled(true);
+
+                Log.e(TAG, "Falha ao buscar questões.", t);
+
+                Toast.makeText(
+                        ConfiguracaoActivity.this,
+                        "Falha na conexão com o servidor.",
+                        Toast.LENGTH_LONG
+                ).show();
+            }
+        });
+    }
+
+    private void configurarTempo() {
+
+
+        seekTempo.setProgress(20);
+
+        txtTempo.setText(
+                (seekTempo.getProgress() + 10) + " segundos"
+        );
+
+        seekTempo.setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener() {
+
+                    @Override
+                    public void onProgressChanged(
+                            SeekBar seekBar,
+                            int progress,
+                            boolean fromUser) {
+
+                        int tempo = progress + 10;
+
+                        txtTempo.setText(tempo + " segundos");
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                    }
+                });
+    }
+
 
 }
