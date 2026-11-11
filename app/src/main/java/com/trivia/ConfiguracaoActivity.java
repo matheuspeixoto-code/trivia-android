@@ -14,6 +14,9 @@ import android.widget.Spinner;
 import com.trivia.api.ApiService;
 import com.trivia.model.Categoria;
 import com.trivia.model.CategoriasResponse;
+import com.trivia.model.Jogador;
+import com.trivia.model.Partida;
+import com.trivia.model.Questao;
 import com.trivia.retrofit.RetrofitCategoria;
 import com.trivia.utils.ConfiguracaoUtils;
 
@@ -205,7 +208,7 @@ public class ConfiguracaoActivity extends AppCompatActivity
             return;
         }
 
-        buscarQuestoes(quantidade, categoriaId, dificuldade, tipo);
+        buscarQuestoes(quantidade, categoriaId, dificuldade, tipo,tempo);
     }
 
 
@@ -285,7 +288,8 @@ public class ConfiguracaoActivity extends AppCompatActivity
             int quantidade,
             Integer categoriaId,
             String dificuldade,
-            String tipo) {
+            String tipo,
+            int tempo) {
 
         btnIniciarPartida.setEnabled(false);
 
@@ -335,20 +339,45 @@ public class ConfiguracaoActivity extends AppCompatActivity
                     return;
                 }
 
-                List<QuestaoApi> questoes = resultado.getQuestoes();
+                List<QuestaoApi> questoesApi = resultado.getQuestoes();
 
-                Log.d(TAG, "Questões recebidas: " + questoes.size());
+                List<Questao> questoesJogo = new ArrayList<>();
 
-                QuestaoApi primeiraQuestao = questoes.get(0);
+                for (QuestaoApi questaoApi : questoesApi) {
 
-                Log.d(TAG, "Enunciado: "
-                        + primeiraQuestao.getEnunciado());
+                    Questao questao = new Questao(
+                            questaoApi.getCategory(),
+                            questaoApi.getDifficulty(),
+                            questaoApi.getEnunciado(),
+                            questaoApi.getRespostaCorreta(),
+                            questaoApi.getRespostasIncorretas()
+                    );
 
-                Log.d(TAG, "Resposta correta: "
-                        + primeiraQuestao.getRespostaCorreta());
+                    questoesJogo.add(questao);
+                }
 
-                Log.d(TAG, "Respostas incorretas: "
-                        + primeiraQuestao.getRespostasIncorretas());
+                String nomeJogador = getIntent().getStringExtra("nome_jogador");
+
+                Jogador jogador = new Jogador(0, nomeJogador);
+
+                Partida partida = new Partida(
+                        0,
+                        jogador,
+                        questoesJogo,
+                        0,
+                        0,
+                        0,
+                        tempo
+                );
+
+                Intent intent = new Intent(
+                        ConfiguracaoActivity.this,
+                        JogoActivity.class
+                );
+
+                intent.putExtra("partida", partida);
+
+                startActivity(intent);
 
                 Toast.makeText(
                         ConfiguracaoActivity.this,
