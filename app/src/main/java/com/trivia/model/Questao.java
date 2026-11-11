@@ -1,63 +1,45 @@
+
 package com.trivia.model;
 
+import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
-public class Questao {
+public class QuestaoApi {
 
-    private String categoria;
-    private String dificuldade;
+    private String category;
+    private String type;
+    private String difficulty;
+
+    @SerializedName("question")
     private String enunciado;
+
+    @SerializedName("correct_answer")
     private String respostaCorreta;
+
+    @SerializedName("incorrect_answers")
     private List<String> respostasIncorretas;
 
-    public Questao(String categoria, String dificuldade,
-                   String enunciado, String respostaCorreta,
-                   List<String> respostasIncorretas) {
-
-        this.categoria = categoria;
-        this.dificuldade = dificuldade;
-        this.enunciado = enunciado;
-        this.respostaCorreta = respostaCorreta;
-        this.respostasIncorretas = respostasIncorretas;
+    public String getCategory() {
+        return category;
     }
 
-    public String getCategoria() {
-        return categoria;
+    public String getType() {
+        return type;
     }
 
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
-
-    public String getDificuldade() {
-        return dificuldade;
-    }
-
-    public void setDificuldade(String dificuldade) {
-        this.dificuldade = dificuldade;
+    public String getDifficulty() {
+        return difficulty;
     }
 
     public String getEnunciado() {
         return enunciado;
     }
 
-    public void setEnunciado(String enunciado) {
-        this.enunciado = enunciado;
-    }
-
     public String getRespostaCorreta() {
         return respostaCorreta;
     }
 
-    public void setRespostaCorreta(String respostaCorreta) {
-        this.respostaCorreta = respostaCorreta;
-    }
-
     public List<String> getRespostasIncorretas() {
         return respostasIncorretas;
-    }
-
-    public void setRespostasIncorretas(List<String> respostasIncorretas) {
-        this.respostasIncorretas = respostasIncorretas;
     }
 }
