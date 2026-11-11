@@ -27,6 +27,9 @@
             android:exported="true" />
 
         <activity android:name=".ConfiguracaoActivity" android:exported="true"/>
+        <activity
+            android:name=".JogoActivity"
+            android:exported="true" />
 
         <provider
             android:name=".provider.TriviaProvider"
