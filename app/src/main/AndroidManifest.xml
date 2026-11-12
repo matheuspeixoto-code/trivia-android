@@ -31,6 +31,10 @@
             android:name=".JogoActivity"
             android:exported="true" />
 
+        <activity
+            android:name=".ResultadoActivity"
+            android:exported="true" />
+
         <provider
             android:name=".provider.TriviaProvider"
             android:authorities="com.trivia.provider"
