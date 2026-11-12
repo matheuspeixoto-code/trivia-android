@@ -3,6 +3,7 @@ package com.trivia.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 
 import com.trivia.provider.TriviaProvider;
@@ -43,5 +44,16 @@ public class PartidaRepositorio {
         );
 
         return uri != null;
+    }
+
+    public Cursor listarHistorico(String nomeJogador) {
+
+        return context.getContentResolver().query(
+                TriviaProvider.URI_HISTORICO,
+                null,
+                null,
+                new String[]{nomeJogador},
+                null
+        );
     }
 }
