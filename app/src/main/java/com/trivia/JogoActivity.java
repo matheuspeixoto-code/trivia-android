@@ -175,6 +175,7 @@ public class JogoActivity extends AppCompatActivity {
         }
     }
 
+
     private void finalizarPartida() {
 
         if (partidaSalva) {
@@ -210,44 +211,41 @@ public class JogoActivity extends AppCompatActivity {
 
             boolean resultadoSalvamento = salvo;
 
+
             runOnUiThread(() -> {
 
-                btnAcao.setEnabled(true);
-
-                String mensagem = "Você acertou " + acertos +
-                        " de " + partida.getQuestoes().size() +
-                        " questões.";
-
                 if (!resultadoSalvamento) {
-                    mensagem += "\nNão foi possível salvar o resultado.";
+                    Toast.makeText(
+                            this,
+                            "Não foi possível salvar o resultado.",
+                            Toast.LENGTH_LONG
+                    ).show();
                 }
 
-                new AlertDialog.Builder(this)
-                        .setTitle("Partida finalizada")
-                        .setMessage(mensagem)
-                        .setCancelable(false)
-                        .setPositiveButton("Voltar ao menu", (dialog, which) -> {
+                Intent intent = new Intent(
+                        JogoActivity.this,
+                        ResultadoActivity.class
+                );
 
-                            Intent intent = new Intent(
-                                    JogoActivity.this,
-                                    MenuActivity.class
-                            );
+                intent.putExtra(
+                        "nome_jogador",
+                        partida.getJogador().getNome()
+                );
 
-                            intent.putExtra(
-                                    "nome_jogador",
-                                    partida.getJogador().getNome()
-                            );
+                intent.putExtra(
+                        "total_questoes",
+                        partida.getQuestoes().size()
+                );
 
-                            intent.setFlags(
-                                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                                            Intent.FLAG_ACTIVITY_SINGLE_TOP
-                            );
+                intent.putExtra("acertos", acertos);
 
-                            startActivity(intent);
-                            finish();
-                        })
-                        .show();
+                intent.putExtra("pontuacao", acertos * 100);
+
+                startActivity(intent);
+
+                finish();
             });
         });
     }
+
 }
