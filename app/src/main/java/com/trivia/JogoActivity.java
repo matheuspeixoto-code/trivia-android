@@ -1,5 +1,6 @@
 package com.trivia;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.widget.Button;
@@ -11,12 +12,16 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.trivia.database.JogadorRepositorio;
+import com.trivia.database.PartidaRepositorio;
 import com.trivia.model.Partida;
 import com.trivia.model.Questao;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class JogoActivity extends AppCompatActivity {
 
@@ -29,6 +34,11 @@ public class JogoActivity extends AppCompatActivity {
     private Partida partida;
     private int indiceAtual = 0;
     private int acertos = 0;
+
+    private final ExecutorService executor =
+            Executors.newSingleThreadExecutor();
+
+    private boolean partidaSalva = false;
 
     private boolean respostaConfirmada = false;
     private String respostaSelecionada;
@@ -166,16 +176,78 @@ public class JogoActivity extends AppCompatActivity {
     }
 
     private void finalizarPartida() {
-        new AlertDialog.Builder(this)
-                .setTitle("Partida finalizada")
-                .setMessage(
-                        "Você acertou " + acertos + " de " +
-                                partida.getQuestoes().size() + " questões."
-                )
-                .setCancelable(false)
-                .setPositiveButton("Voltar ao menu", (dialog, which) -> {
-                    finish();
-                })
-                .show();
+
+        if (partidaSalva) {
+            return;
+        }
+
+        partidaSalva = true;
+        btnAcao.setEnabled(false);
+
+        executor.execute(() -> {
+
+            JogadorRepositorio jogadorRepositorio =
+                    new JogadorRepositorio(this);
+
+            long jogadorId = jogadorRepositorio.obterOuCadastrar(
+                    partida.getJogador().getNome()
+            );
+
+            boolean salvo = false;
+
+            if (jogadorId != -1) {
+
+                PartidaRepositorio partidaRepositorio =
+                        new PartidaRepositorio(this);
+
+                salvo = partidaRepositorio.salvar(
+                        jogadorId,
+                        partida.getQuestoes().size(),
+                        acertos,
+                        acertos * 100
+                );
+            }
+
+            boolean resultadoSalvamento = salvo;
+
+            runOnUiThread(() -> {
+
+                btnAcao.setEnabled(true);
+
+                String mensagem = "Você acertou " + acertos +
+                        " de " + partida.getQuestoes().size() +
+                        " questões.";
+
+                if (!resultadoSalvamento) {
+                    mensagem += "\nNão foi possível salvar o resultado.";
+                }
+
+                new AlertDialog.Builder(this)
+                        .setTitle("Partida finalizada")
+                        .setMessage(mensagem)
+                        .setCancelable(false)
+                        .setPositiveButton("Voltar ao menu", (dialog, which) -> {
+
+                            Intent intent = new Intent(
+                                    JogoActivity.this,
+                                    MenuActivity.class
+                            );
+
+                            intent.putExtra(
+                                    "nome_jogador",
+                                    partida.getJogador().getNome()
+                            );
+
+                            intent.setFlags(
+                                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                            Intent.FLAG_ACTIVITY_SINGLE_TOP
+                            );
+
+                            startActivity(intent);
+                            finish();
+                        })
+                        .show();
+            });
+        });
     }
 }
