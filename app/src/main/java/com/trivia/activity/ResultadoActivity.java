@@ -1,5 +1,5 @@
 
-package com.trivia;
+package com.trivia.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.trivia.R;
 
 public class ResultadoActivity extends AppCompatActivity {
 

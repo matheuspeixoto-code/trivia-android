@@ -1,4 +1,4 @@
-package com.trivia;
+package com.trivia.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.trivia.R;
 import com.trivia.model.Partida;
 import com.trivia.model.Questao;
 import com.trivia.service.PartidaService;
@@ -21,7 +22,6 @@ import java.util.List;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.ResultReceiver;
-import com.trivia.service.PartidaService;
 
 public class JogoActivity extends AppCompatActivity {
 
@@ -115,7 +115,7 @@ public class JogoActivity extends AppCompatActivity {
 
     private void executarAcao() {
 
-        // Primeiro clique: verifica a resposta.
+
         if (!respostaConfirmada) {
 
             int idSelecionado = grupoAlternativas.getCheckedRadioButtonId();
@@ -134,7 +134,7 @@ public class JogoActivity extends AppCompatActivity {
             return;
         }
 
-        // Segundo clique: avança para a próxima questão.
+
         indiceAtual++;
 
         if (indiceAtual < partida.getQuestoes().size()) {
@@ -167,7 +167,7 @@ public class JogoActivity extends AppCompatActivity {
         respostaConfirmada = true;
         btnAcao.setText("Próxima questão");
 
-        // Impede trocar a alternativa depois de confirmar.
+
         for (int i = 0; i < grupoAlternativas.getChildCount(); i++) {
             grupoAlternativas.getChildAt(i).setEnabled(false);
         }
@@ -184,14 +184,14 @@ public class JogoActivity extends AppCompatActivity {
         partidaSalva = true;
         btnAcao.setEnabled(false);
 
-        // Atualiza os dados da partida antes de enviá-la.
+
         partida.setQuantidadeAcertos(acertos);
         partida.setQuantidadeErros(
                 partida.getQuestoes().size() - acertos
         );
         partida.setPontuacao(acertos * 100);
 
-        // Recebe a confirmação do Service.
+
         ResultReceiver receiver = new ResultReceiver(
                 new Handler(Looper.getMainLooper())
         ) {
@@ -208,7 +208,7 @@ public class JogoActivity extends AppCompatActivity {
                     ).show();
                 }
 
-                // Abre a tela de resultado.
+
                 Intent intent = new Intent(
                         JogoActivity.this,
                         ResultadoActivity.class
@@ -232,7 +232,7 @@ public class JogoActivity extends AppCompatActivity {
             }
         };
 
-        // Inicia o Service enviando o objeto Partida.
+
         Intent serviceIntent = new Intent(
                 JogoActivity.this,
                 PartidaService.class

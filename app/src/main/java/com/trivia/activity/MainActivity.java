@@ -1,4 +1,4 @@
-package com.trivia;
+package com.trivia.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.trivia.R;
 import com.trivia.database.TesteBancoDados;
 
 public class MainActivity extends AppCompatActivity {

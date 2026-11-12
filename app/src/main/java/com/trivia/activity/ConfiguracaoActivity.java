@@ -1,4 +1,4 @@
-package com.trivia;
+package com.trivia.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 
+import com.trivia.R;
 import com.trivia.api.ApiService;
 import com.trivia.model.Categoria;
 import com.trivia.model.CategoriasResponse;
