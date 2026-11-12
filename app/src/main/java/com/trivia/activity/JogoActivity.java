@@ -9,19 +9,19 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.trivia.database.JogadorRepositorio;
-import com.trivia.database.PartidaRepositorio;
 import com.trivia.model.Partida;
 import com.trivia.model.Questao;
+import com.trivia.service.PartidaService;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.ResultReceiver;
+import com.trivia.service.PartidaService;
 
 public class JogoActivity extends AppCompatActivity {
 
@@ -35,8 +35,6 @@ public class JogoActivity extends AppCompatActivity {
     private int indiceAtual = 0;
     private int acertos = 0;
 
-    private final ExecutorService executor =
-            Executors.newSingleThreadExecutor();
 
     private boolean partidaSalva = false;
 
@@ -176,6 +174,7 @@ public class JogoActivity extends AppCompatActivity {
     }
 
 
+
     private void finalizarPartida() {
 
         if (partidaSalva) {
@@ -185,43 +184,31 @@ public class JogoActivity extends AppCompatActivity {
         partidaSalva = true;
         btnAcao.setEnabled(false);
 
-        executor.execute(() -> {
+        // Atualiza os dados da partida antes de enviá-la.
+        partida.setQuantidadeAcertos(acertos);
+        partida.setQuantidadeErros(
+                partida.getQuestoes().size() - acertos
+        );
+        partida.setPontuacao(acertos * 100);
 
-            JogadorRepositorio jogadorRepositorio =
-                    new JogadorRepositorio(this);
+        // Recebe a confirmação do Service.
+        ResultReceiver receiver = new ResultReceiver(
+                new Handler(Looper.getMainLooper())
+        ) {
+            @Override
+            protected void onReceiveResult(int resultCode, Bundle resultData) {
 
-            long jogadorId = jogadorRepositorio.obterOuCadastrar(
-                    partida.getJogador().getNome()
-            );
+                boolean salvo = resultData.getBoolean("salvo");
 
-            boolean salvo = false;
-
-            if (jogadorId != -1) {
-
-                PartidaRepositorio partidaRepositorio =
-                        new PartidaRepositorio(this);
-
-                salvo = partidaRepositorio.salvar(
-                        jogadorId,
-                        partida.getQuestoes().size(),
-                        acertos,
-                        acertos * 100
-                );
-            }
-
-            boolean resultadoSalvamento = salvo;
-
-
-            runOnUiThread(() -> {
-
-                if (!resultadoSalvamento) {
+                if (!salvo) {
                     Toast.makeText(
-                            this,
+                            JogoActivity.this,
                             "Não foi possível salvar o resultado.",
                             Toast.LENGTH_LONG
                     ).show();
                 }
 
+                // Abre a tela de resultado.
                 Intent intent = new Intent(
                         JogoActivity.this,
                         ResultadoActivity.class
@@ -238,14 +225,31 @@ public class JogoActivity extends AppCompatActivity {
                 );
 
                 intent.putExtra("acertos", acertos);
-
-                intent.putExtra("pontuacao", acertos * 100);
+                intent.putExtra("pontuacao", partida.getPontuacao());
 
                 startActivity(intent);
-
                 finish();
-            });
-        });
+            }
+        };
+
+        // Inicia o Service enviando o objeto Partida.
+        Intent serviceIntent = new Intent(
+                JogoActivity.this,
+                PartidaService.class
+        );
+
+        serviceIntent.putExtra(
+                PartidaService.EXTRA_PARTIDA,
+                partida
+        );
+
+        serviceIntent.putExtra(
+                PartidaService.EXTRA_RECEIVER,
+                receiver
+        );
+
+        startService(serviceIntent);
     }
+
 
 }
