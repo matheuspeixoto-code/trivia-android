@@ -3,6 +3,7 @@ package com.trivia.provider;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -13,8 +14,30 @@ public class TriviaProvider extends ContentProvider {
 
     public static final String AUTHORITY = "com.trivia.provider";
 
+    // URIs das tabelas
     public static final Uri URI_QUESTOES =
             Uri.parse("content://" + AUTHORITY + "/questao");
+
+    public static final Uri URI_JOGADORES =
+            Uri.parse("content://" + AUTHORITY + "/jogador");
+
+    public static final Uri URI_PARTIDAS =
+            Uri.parse("content://" + AUTHORITY + "/partida");
+
+    // Códigos para identificar cada tabela
+    private static final int QUESTOES = 1;
+    private static final int JOGADORES = 2;
+    private static final int PARTIDAS = 3;
+
+    private static final UriMatcher uriMatcher = new UriMatcher(
+            UriMatcher.NO_MATCH
+    );
+
+    static {
+        uriMatcher.addURI(AUTHORITY, "questao", QUESTOES);
+        uriMatcher.addURI(AUTHORITY, "jogador", JOGADORES);
+        uriMatcher.addURI(AUTHORITY, "partida", PARTIDAS);
+    }
 
     private BancoDados bancoDados;
 
@@ -34,8 +57,27 @@ public class TriviaProvider extends ContentProvider {
 
         SQLiteDatabase db = bancoDados.getReadableDatabase();
 
+        String tabela;
+
+        switch (uriMatcher.match(uri)) {
+            case QUESTOES:
+                tabela = BancoDados.TABELA_QUESTAO;
+                break;
+
+            case JOGADORES:
+                tabela = BancoDados.TABELA_JOGADOR;
+                break;
+
+            case PARTIDAS:
+                tabela = BancoDados.TABELA_PARTIDA;
+                break;
+
+            default:
+                throw new IllegalArgumentException("URI desconhecida: " + uri);
+        }
+
         return db.query(
-                BancoDados.TABELA_QUESTAO,
+                tabela,
                 projection,
                 selection,
                 selectionArgs,
@@ -50,11 +92,30 @@ public class TriviaProvider extends ContentProvider {
 
         SQLiteDatabase db = bancoDados.getWritableDatabase();
 
-        long id = db.insert(
-                BancoDados.TABELA_QUESTAO,
-                null,
-                values
-        );
+        String tabela;
+
+        switch (uriMatcher.match(uri)) {
+            case QUESTOES:
+                tabela = BancoDados.TABELA_QUESTAO;
+                break;
+
+            case JOGADORES:
+                tabela = BancoDados.TABELA_JOGADOR;
+                break;
+
+            case PARTIDAS:
+                tabela = BancoDados.TABELA_PARTIDA;
+                break;
+
+            default:
+                throw new IllegalArgumentException("URI desconhecida: " + uri);
+        }
+
+        long id = db.insert(tabela, null, values);
+
+        if (id == -1) {
+            return null;
+        }
 
         return Uri.withAppendedPath(uri, String.valueOf(id));
     }
@@ -65,7 +126,6 @@ public class TriviaProvider extends ContentProvider {
             ContentValues values,
             String selection,
             String[] selectionArgs) {
-
         return 0;
     }
 
@@ -74,7 +134,6 @@ public class TriviaProvider extends ContentProvider {
             Uri uri,
             String selection,
             String[] selectionArgs) {
-
         return 0;
     }
 
