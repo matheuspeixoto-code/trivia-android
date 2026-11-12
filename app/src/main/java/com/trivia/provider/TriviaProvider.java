@@ -24,10 +24,15 @@ public class TriviaProvider extends ContentProvider {
     public static final Uri URI_PARTIDAS =
             Uri.parse("content://" + AUTHORITY + "/partida");
 
+    public static final Uri URI_HISTORICO =
+            Uri.parse("content://" + AUTHORITY + "/historico");
+
     // Códigos para identificar cada tabela
     private static final int QUESTOES = 1;
     private static final int JOGADORES = 2;
     private static final int PARTIDAS = 3;
+
+    private static final int HISTORICO = 4;
 
     private static final UriMatcher uriMatcher = new UriMatcher(
             UriMatcher.NO_MATCH
@@ -37,6 +42,7 @@ public class TriviaProvider extends ContentProvider {
         uriMatcher.addURI(AUTHORITY, "questao", QUESTOES);
         uriMatcher.addURI(AUTHORITY, "jogador", JOGADORES);
         uriMatcher.addURI(AUTHORITY, "partida", PARTIDAS);
+        uriMatcher.addURI(AUTHORITY, "historico", HISTORICO);
     }
 
     private BancoDados bancoDados;
@@ -71,7 +77,23 @@ public class TriviaProvider extends ContentProvider {
             case PARTIDAS:
                 tabela = BancoDados.TABELA_PARTIDA;
                 break;
+            case HISTORICO:
 
+                String sql =
+                        "SELECT " +
+                        "partida.id AS partida_id, " +
+                        "jogador.nome AS nome_jogador, " +
+                        "partida.data, " +
+                        "partida.quantidade_questoes, " +
+                        "partida.acertos, " +
+                        "partida.pontuacao " +
+                        "FROM partida " +
+                        "INNER JOIN jogador " +
+                        "ON partida.jogador_id = jogador.id " +
+                        "WHERE jogador.nome = ? " +
+                        "ORDER BY partida.id DESC";
+
+                return db.rawQuery(sql, selectionArgs);
             default:
                 throw new IllegalArgumentException("URI desconhecida: " + uri);
         }
