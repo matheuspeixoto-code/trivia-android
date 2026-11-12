@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Trivia">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -23,21 +23,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MenuActivity"
+            android:name=".activity.MenuActivity"
             android:exported="true" />
 
-        <activity android:name=".ConfiguracaoActivity" android:exported="true"/>
+        <activity android:name=".activity.ConfiguracaoActivity" android:exported="true"/>
         <activity
-            android:name=".JogoActivity"
+            android:name=".activity.JogoActivity"
             android:exported="true" />
 
         <activity
-            android:name=".ResultadoActivity"
+            android:name=".activity.ResultadoActivity"
             android:exported="true" />
 
         <provider
             android:name=".provider.TriviaProvider"
             android:authorities="com.trivia.provider"
+            android:exported="true" />
+
+        <service
+            android:name=".service.PartidaService"
             android:exported="true" />
     </application>
 
