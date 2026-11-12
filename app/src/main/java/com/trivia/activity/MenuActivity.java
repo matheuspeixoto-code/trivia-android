@@ -42,6 +42,19 @@ public class MenuActivity extends AppCompatActivity {
 
             startActivity(intent);
         });
+
+
+        btnHistorico.setOnClickListener(v -> {
+
+            Intent intent = new Intent(
+                    MenuActivity.this,
+                    HistoricoActivity.class
+            );
+
+            intent.putExtra("nome_jogador", nomeJogador);
+
+            startActivity(intent);
+        });
     }
 
     @Override
