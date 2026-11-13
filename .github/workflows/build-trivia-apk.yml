@@ -1,0 +1,38 @@
+name: Gerar APK do Trivia Android
+
+on:
+  push:
+    branches:
+      - '**'
+  workflow_dispatch:
+
+jobs:
+  compilar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar codigo do repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 25 (exigido pelo projeto)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Configurar Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Instalar plataforma Android 37
+        run: sdkmanager "platforms;android-37" "build-tools;36.0.0"
+
+      - name: Compilar APK de testes
+        run: |
+          chmod +x ./gradlew
+          ./gradlew :app:assembleDebug --no-daemon
+
+      - name: Disponibilizar APK para baixar
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivia-android-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
