@@ -1,4 +1,3 @@
-
 package com.trivia.provider;
 
 import android.content.ContentProvider;
@@ -14,7 +13,6 @@ public class TriviaProvider extends ContentProvider {
 
     public static final String AUTHORITY = "com.trivia.provider";
 
-    // URIs das tabelas
     public static final Uri URI_QUESTOES =
             Uri.parse("content://" + AUTHORITY + "/questao");
 
@@ -30,7 +28,6 @@ public class TriviaProvider extends ContentProvider {
     public static final Uri URI_HISTORICO =
             Uri.parse("content://" + AUTHORITY + "/historico");
 
-    // Códigos para identificar cada tabela
     private static final int QUESTOES = 1;
     private static final int JOGADORES = 2;
     private static final int PARTIDAS = 3;

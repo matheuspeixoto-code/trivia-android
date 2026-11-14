@@ -1,4 +1,3 @@
-
 package com.trivia.database;
 
 import android.content.ContentValues;
@@ -21,7 +20,6 @@ public class QuestaoRepositorio {
         this.context = context.getApplicationContext();
     }
 
-    // Método original: insere uma questão no SQLite
     public void inserirQuestao(
             String enunciado,
             String dificuldade,
@@ -55,7 +53,6 @@ public class QuestaoRepositorio {
         );
     }
 
-    // Método original: consulta todas as questões
     public Cursor consultarQuestoes() {
 
         return context.getContentResolver().query(
@@ -67,7 +64,6 @@ public class QuestaoRepositorio {
         );
     }
 
-    // Busca uma categoria existente ou a cadastra
     private int garantirCategoria(String nome) {
 
         if (nome == null || nome.trim().isEmpty()) {
@@ -103,7 +99,6 @@ public class QuestaoRepositorio {
         return Integer.parseInt(uri.getLastPathSegment());
     }
 
-    // Salva as perguntas recebidas da API para uso offline
     public void salvarQuestoesParaOffline(List<Questao> questoes) {
 
         if (questoes == null || questoes.isEmpty()) {
@@ -128,7 +123,6 @@ public class QuestaoRepositorio {
                 continue;
             }
 
-            // Impede inserir novamente a mesma pergunta
             boolean jaExiste = false;
 
             try (Cursor cursor = context.getContentResolver().query(
@@ -166,7 +160,6 @@ public class QuestaoRepositorio {
         }
     }
 
-    // Recupera perguntas armazenadas para uma partida offline
     public List<Questao> buscarQuestoesOffline(
             int quantidade,
             String nomeCategoria,
@@ -267,7 +260,6 @@ public class QuestaoRepositorio {
         return resultado;
     }
 
-    // Recupera o nome de uma categoria armazenada
     private String obterNomeCategoria(int categoriaId) {
 
         try (Cursor cursor = context.getContentResolver().query(
@@ -285,7 +277,6 @@ public class QuestaoRepositorio {
         return "";
     }
 
-    // Recupera categorias disponíveis no banco local
     public List<Categoria> listarCategoriasOffline() {
 
         List<Categoria> categorias = new ArrayList<>();
@@ -317,5 +308,25 @@ public class QuestaoRepositorio {
         }
 
         return categorias;
+    }
+
+    public void salvarCategoriasParaOffline(
+            List<Categoria> categorias) {
+
+        if (categorias == null) {
+            return;
+        }
+
+        for (Categoria categoria : categorias) {
+
+            if (categoria == null
+                    || categoria.getId() <= 0
+                    || categoria.getNome() == null
+                    || categoria.getNome().trim().isEmpty()) {
+                continue;
+            }
+
+            garantirCategoria(categoria.getNome());
+        }
     }
 }

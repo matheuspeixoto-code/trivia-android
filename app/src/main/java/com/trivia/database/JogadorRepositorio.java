@@ -18,7 +18,6 @@ public class JogadorRepositorio {
 
     public long obterOuCadastrar(String nome) {
 
-        // Consulta se o jogador já existe.
         Cursor cursor = context.getContentResolver().query(
                 TriviaProvider.URI_JOGADORES,
                 new String[]{"id"},
@@ -39,7 +38,6 @@ public class JogadorRepositorio {
             }
         }
 
-        // Se não existe, cadastra o jogador.
         ContentValues valores = new ContentValues();
         valores.put("nome", nome);
 
@@ -52,7 +50,6 @@ public class JogadorRepositorio {
             return -1;
         }
 
-        // Recupera o ID gerado pelo SQLite.
         return android.content.ContentUris.parseId(uri);
     }
 }
