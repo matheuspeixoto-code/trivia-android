@@ -1,8 +1,23 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Tema do app. As cores vêm de colors.xml (e values-night/colors.xml no modo escuro). -->
     <style name="Base.Theme.Trivia" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/trivia_primary</item>
+        <item name="colorOnPrimary">@color/trivia_on_primary</item>
+        <item name="colorPrimaryContainer">@color/trivia_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/trivia_ink</item>
+        <item name="colorSecondary">@color/trivia_accent</item>
+        <item name="colorOnSecondary">@color/trivia_on_accent</item>
+        <item name="colorSurface">@color/trivia_surface</item>
+        <item name="colorOnSurface">@color/trivia_ink</item>
+        <item name="colorOnSurfaceVariant">@color/trivia_ink_muted</item>
+        <item name="colorOutline">@color/trivia_outline</item>
+        <item name="colorError">@color/trivia_wrong</item>
+        <item name="android:colorBackground">@color/trivia_bg</item>
+        <item name="colorOnBackground">@color/trivia_ink</item>
+        <item name="android:textColorPrimary">@color/trivia_ink</item>
+        <item name="android:textColorSecondary">@color/trivia_ink_muted</item>
+        <item name="android:textColorHint">@color/trivia_ink_muted</item>
+        <item name="android:windowLightStatusBar">@bool/trivia_light_bars</item>
     </style>
 
     <style name="Theme.Trivia" parent="Base.Theme.Trivia" />

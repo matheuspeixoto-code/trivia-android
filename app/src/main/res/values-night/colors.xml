@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="trivia_bg">#0C1A1D</color>
+    <color name="trivia_surface">#14282C</color>
+    <color name="trivia_ink">#E6F1EF</color>
+    <color name="trivia_ink_muted">#9DB7B4</color>
+    <color name="trivia_outline">#2E4A4E</color>
+
+    <color name="trivia_primary">#5FD0C8</color>
+    <color name="trivia_on_primary">#06302D</color>
+    <color name="trivia_primary_container">#17403F</color>
+
+    <color name="trivia_correct">#5FD79A</color>
+    <color name="trivia_correct_bg">#123B2A</color>
+    <color name="trivia_wrong">#FF8A80</color>
+    <color name="trivia_wrong_bg">#4A1D1A</color>
+</resources>

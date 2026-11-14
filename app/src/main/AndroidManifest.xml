@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Trivia">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -23,10 +25,39 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MenuActivity"
+            android:name=".activity.MenuActivity"
             android:exported="true" />
 
-        <activity android:name=".ConfiguracaoActivity" android:exported="true"/>
+        <activity android:name=".activity.ConfiguracaoActivity" android:exported="true"/>
+        <activity
+            android:name=".activity.JogoActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".activity.ResultadoActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".activity.HistoricoActivity"
+            android:exported="true" />
+
+        <provider
+            android:name=".provider.TriviaProvider"
+            android:authorities="com.trivia.provider"
+            android:exported="true" />
+
+        <service
+            android:name=".service.PartidaService"
+            android:exported="true" />
+
+        <receiver android:name=".broadcast.ConexaoReceiver"
+                android:exported="true"
+            >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+
+        </receiver>
     </application>
 
 </manifest>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/trivia_bg"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="28dp">
+
+        <TextView
+            android:id="@+id/txtTituloResultado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Fim de jogo!"
+            android:textAppearance="@style/TextAppearance.Trivia.Title" />
+
+        <TextView
+            android:id="@+id/txtNomeJogador"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Jogador: Matheus"
+            android:textAppearance="@style/TextAppearance.Trivia.Muted" />
+
+        <!-- Placar: o elemento em destaque da tela -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/bg_score"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="32dp"
+            android:paddingBottom="32dp">
+
+            <TextView
+                android:id="@+id/txtPontuacao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-black"
+                android:text="Pontuação: 800 pontos"
+                android:textColor="@color/trivia_on_accent"
+                android:textSize="26sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Resumo da partida"
+                android:textAppearance="@style/TextAppearance.Trivia.Heading" />
+
+            <TextView
+                android:id="@+id/txtTotalQuestoes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:text="Quantidade de questões: 10"
+                android:textAppearance="@style/TextAppearance.Trivia.Body" />
+
+            <TextView
+                android:id="@+id/txtAcertos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="Acertos: 8"
+                android:textColor="@color/trivia_correct"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/txtErros"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:text="Erros: 2"
+                android:textColor="@color/trivia_wrong"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btnJogarNovamente"
+            style="@style/Widget.Trivia.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:minHeight="64dp"
+            android:text="Jogar novamente" />
+
+        <Button
+            android:id="@+id/btnVoltarMenu"
+            style="@style/Widget.Trivia.Button.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:minHeight="64dp"
+            android:text="Voltar ao menu principal" />
+
+    </LinearLayout>
+</ScrollView>

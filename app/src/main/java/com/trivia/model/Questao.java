@@ -1,8 +1,10 @@
+
 package com.trivia.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Questao {
+public class Questao implements Serializable {
 
     private String categoria;
     private String dificuldade;

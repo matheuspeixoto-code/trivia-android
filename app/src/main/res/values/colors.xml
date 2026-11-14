@@ -2,4 +2,23 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Paleta Trivia Master (claro). Versão escura em values-night/colors.xml -->
+    <color name="trivia_bg">#F2F5F4</color>
+    <color name="trivia_surface">#FFFFFF</color>
+    <color name="trivia_ink">#0F2A2E</color>
+    <color name="trivia_ink_muted">#4A6266</color>
+    <color name="trivia_outline">#C5D3D1</color>
+
+    <color name="trivia_primary">#0E6B6B</color>
+    <color name="trivia_on_primary">#FFFFFF</color>
+    <color name="trivia_primary_container">#D5EEEA</color>
+
+    <color name="trivia_accent">#FFC83D</color>
+    <color name="trivia_on_accent">#2A2000</color>
+
+    <color name="trivia_correct">#1E8E5A</color>
+    <color name="trivia_correct_bg">#D3F0E0</color>
+    <color name="trivia_wrong">#C0392F</color>
+    <color name="trivia_wrong_bg">#F9DAD6</color>
 </resources>

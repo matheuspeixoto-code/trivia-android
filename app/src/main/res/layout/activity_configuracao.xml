@@ -1,86 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:gravity="center_vertical">
+    android:background="@color/trivia_bg"
+    android:fitsSystemWindows="true">
 
-    <TextView
+    <!-- Estado: carregando categorias -->
+    <LinearLayout
+        android:id="@+id/layoutCarregando"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Configurar partida"
-        android:textSize="26sp"
-        android:textStyle="bold"
+        android:layout_height="match_parent"
         android:gravity="center"
-        android:layout_marginBottom="24dp"/>
+        android:orientation="vertical"
+        android:padding="28dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Categoria"/>
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
 
-    <Spinner
-        android:id="@+id/spCategoria"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Carregando..."
+            android:textAppearance="@style/TextAppearance.Trivia.Muted" />
+    </LinearLayout>
+
+    <!-- Estado: formulário -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Dificuldade"
-        android:layout_marginTop="16dp"/>
+        <LinearLayout
+            android:id="@+id/layoutConfiguracao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="28dp"
+            android:visibility="gone">
 
-    <Spinner
-        android:id="@+id/spDificuldade"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Configurar partida"
+                android:textAppearance="@style/TextAppearance.Trivia.Title" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tipo"
-        android:layout_marginTop="16dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:layout_marginBottom="8dp"
+                android:text="Categoria"
+                android:textAppearance="@style/TextAppearance.Trivia.Label" />
 
-    <Spinner
-        android:id="@+id/spTipo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+            <Spinner
+                android:id="@+id/spCategoria"
+                style="@style/Widget.Trivia.Spinner" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Quantidade de perguntas"
-        android:layout_marginTop="16dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="8dp"
+                android:text="Dificuldade"
+                android:textAppearance="@style/TextAppearance.Trivia.Label" />
 
-    <EditText
-        android:id="@+id/edtQuantidade"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:text="10"
-        android:maxLength="2"/>
+            <Spinner
+                android:id="@+id/spDificuldade"
+                style="@style/Widget.Trivia.Spinner" />
 
-    <TextView
-        android:id="@+id/txtTempo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tempo por pergunta: 30 segundos"
-        android:layout_marginTop="16dp"/>
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.Trivia.TextInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:hint="Quantidade de perguntas">
 
-    <SeekBar
-        android:id="@+id/seekTempo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="50"
-        android:progress="20"/>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtQuantidade"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:maxLength="2"
+                    android:text="10" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/btnIniciarPartida"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Iniciar partida"
-        android:layout_marginTop="24dp"/>
+            <TextView
+                android:id="@+id/txtTempo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Tempo por pergunta: 30 segundos"
+                android:textAppearance="@style/TextAppearance.Trivia.Label" />
 
-</LinearLayout>
+            <SeekBar
+                android:id="@+id/seekTempo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:max="50"
+                android:progress="20" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btnIniciarPartida"
+                style="@style/Widget.Trivia.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:minHeight="64dp"
+                android:text="Iniciar partida"
+                app:icon="@drawable/ic_play"
+                app:iconGravity="textStart"
+                app:iconPadding="12dp"
+                app:iconTint="?attr/colorOnPrimary" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>
