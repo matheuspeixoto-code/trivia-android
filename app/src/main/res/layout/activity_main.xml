@@ -1,38 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:gravity="center_vertical">
+    android:background="@color/trivia_bg"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true"
+    android:scrollbars="none">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Trivia"
-        android:textSize="28sp"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Informe seu nome para começar."/>
-
-    <EditText
-        android:id="@+id/edtNomeJogador"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nome do jogador"
-        android:inputType="textPersonName"
-        android:maxLength="50"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="28dp">
 
-    <Button
-        android:id="@+id/btnComecar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Continuar"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:lineSpacingMultiplier="0.85"
+            android:text="Trivia\nMaster"
+            android:textAppearance="@style/TextAppearance.Trivia.Wordmark" />
 
-</LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Perguntas de qualquer tema, no seu ritmo."
+            android:textAppearance="@style/TextAppearance.Trivia.Muted" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="12dp"
+            android:text="Informe seu nome para começar."
+            android:textAppearance="@style/TextAppearance.Trivia.Label" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Trivia.TextInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nome do jogador">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtNomeJogador"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:maxLength="50"
+                android:singleLine="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnComecar"
+            style="@style/Widget.Trivia.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Continuar" />
+
+    </LinearLayout>
+</ScrollView>

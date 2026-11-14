@@ -45,7 +45,6 @@ public class ConfiguracaoActivity extends AppCompatActivity
     private LinearLayout layoutCarregando;
     private LinearLayout layoutConfiguracao;
     private Spinner spDificuldade;
-    private Spinner spTipo;
 
     private TextView txtTempo;
 
@@ -54,6 +53,8 @@ public class ConfiguracaoActivity extends AppCompatActivity
     private SeekBar seekTempo;
     private Button btnIniciarPartida;
     private static final String TAG = "ConfiguracaoActivity";
+
+    private static final String TIPO_QUESTAO = "multiple";
 
     private ConexaoReceiver conexaoReceiver = new ConexaoReceiver();
 
@@ -77,7 +78,6 @@ public class ConfiguracaoActivity extends AppCompatActivity
         configurarTempo();
 
         configurarDificuldade();
-        configurarTipo();
         carregarCategorias();
 
         btnIniciarPartida.setOnClickListener(v -> {
@@ -156,38 +156,13 @@ public class ConfiguracaoActivity extends AppCompatActivity
     }
 
 
-    private void configurarTipo() {
-
-        spTipo = findViewById(R.id.spTipo);
-
-        String[] tipo = {
-                "Any Type",
-                "Multiple Choice",
-                "True / False"
-        };
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                tipo
-        );
-
-        adapter.setDropDownViewResource(
-                android.R.layout.simple_spinner_dropdown_item
-        );
-
-        spTipo.setAdapter(adapter);
-    }
-
     private void obterConfiguracao() {
 
         String dificuldade = ConfiguracaoUtils.obterDificuldade(
                 spDificuldade.getSelectedItemPosition()
         );
 
-        String tipo = ConfiguracaoUtils.obterTipo(
-                spTipo.getSelectedItemPosition()
-        );
+        String tipo = TIPO_QUESTAO;
 
         Categoria categoriaSelecionada =
                 (Categoria) spCategoria.getSelectedItem();

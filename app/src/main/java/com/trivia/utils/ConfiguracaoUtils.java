@@ -17,20 +17,4 @@ public class ConfiguracaoUtils {
                 return null;
         }
     }
-
-    public static String obterTipo(int posicao) {
-
-        switch (posicao) {
-            case 1:
-                return "multiple";
-
-            case 2:
-                return "boolean";
-
-            default:
-                return null;
-        }
-    }
-
-
 }
