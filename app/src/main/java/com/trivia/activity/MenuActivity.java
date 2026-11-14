@@ -1,4 +1,3 @@
-
 package com.trivia.activity;
 
 import android.content.Intent;
@@ -10,51 +9,65 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.trivia.R;
+import com.trivia.controller.MenuController;
 
 public class MenuActivity extends AppCompatActivity {
 
-    private static final String TAG = "CicloDeVida_MainActivity";
+    private static final String TAG = "CicloDeVida_MenuActivity";
+
     private TextView txtBoasVindas;
     private Button btnJogar;
     private Button btnHistorico;
+
+    private MenuController controller;
+    private String nomeJogador;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
+        Log.d(TAG, "onCreate() chamado");
+
+        controller = new MenuController();
+
         txtBoasVindas = findViewById(R.id.txtBoasVindas);
         btnJogar = findViewById(R.id.btnJogar);
         btnHistorico = findViewById(R.id.btnHistorico);
 
-        String nomeJogador = getIntent().getStringExtra("nome_jogador");
+        nomeJogador = controller.obterNomeJogador(
+                getIntent().getStringExtra("nome_jogador")
+        );
 
-        txtBoasVindas.setText("Bem-vindo, " + nomeJogador + "!");
+        txtBoasVindas.setText(
+                controller.gerarMensagemBoasVindas(nomeJogador)
+        );
 
+        btnJogar.setOnClickListener(v -> abrirConfiguracao());
 
-        btnJogar.setOnClickListener(view ->{
-            Intent intent = new Intent(
-                    MenuActivity.this,
-                    ConfiguracaoActivity.class
-                    );
+        btnHistorico.setOnClickListener(v -> abrirHistorico());
+    }
 
-            intent.putExtra("nome_jogador", getIntent().getStringExtra("nome_jogador"));
+    private void abrirConfiguracao() {
+        Intent intent = new Intent(
+                MenuActivity.this,
+                ConfiguracaoActivity.class
+        );
 
-            startActivity(intent);
-        });
+        intent.putExtra("nome_jogador", nomeJogador);
 
+        startActivity(intent);
+    }
 
-        btnHistorico.setOnClickListener(v -> {
+    private void abrirHistorico() {
+        Intent intent = new Intent(
+                MenuActivity.this,
+                HistoricoActivity.class
+        );
 
-            Intent intent = new Intent(
-                    MenuActivity.this,
-                    HistoricoActivity.class
-            );
+        intent.putExtra("nome_jogador", nomeJogador);
 
-            intent.putExtra("nome_jogador", nomeJogador);
-
-            startActivity(intent);
-        });
+        startActivity(intent);
     }
 
     @Override
@@ -92,5 +105,4 @@ public class MenuActivity extends AppCompatActivity {
         super.onDestroy();
         Log.d(TAG, "onDestroy() chamado");
     }
-
 }

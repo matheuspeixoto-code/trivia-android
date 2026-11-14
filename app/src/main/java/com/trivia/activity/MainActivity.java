@@ -3,20 +3,22 @@ package com.trivia.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.trivia.R;
+import com.trivia.controller.MainController;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "CicloDeVida_MainActivity";
 
     private EditText edtNomeJogador;
-    protected Button btnComecar;
+    private Button btnComecar;
+
+    private MainController controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,32 +27,32 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate() chamado");
 
+        controller = new MainController();
+
         edtNomeJogador = findViewById(R.id.edtNomeJogador);
         btnComecar = findViewById(R.id.btnComecar);
 
-        btnComecar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnComecar.setOnClickListener(v -> iniciar());
+    }
 
-                String nome = edtNomeJogador.getText()
-                        .toString()
-                        .trim();
+    private void iniciar() {
+        String nome = controller.validarNome(
+                edtNomeJogador.getText().toString()
+        );
 
-                if (nome.isEmpty()) {
-                    edtNomeJogador.setError("Informe seu nome");
-                    return;
-                }
+        if (nome == null) {
+            edtNomeJogador.setError("Informe seu nome");
+            return;
+        }
 
-                Intent intent = new Intent(
-                        MainActivity.this,
-                        MenuActivity.class
-                );
+        Intent intent = new Intent(
+                MainActivity.this,
+                MenuActivity.class
+        );
 
-                intent.putExtra("nome_jogador", nome);
+        intent.putExtra("nome_jogador", nome);
 
-                startActivity(intent);
-            }
-        });
+        startActivity(intent);
     }
 
     @Override

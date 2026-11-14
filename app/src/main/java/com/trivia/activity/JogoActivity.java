@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.ResultReceiver;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -11,6 +14,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -23,18 +27,15 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import com.trivia.R;
+import com.trivia.controller.JogoController;
 import com.trivia.model.Partida;
-import com.trivia.model.Questao;
 import com.trivia.service.PartidaService;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.ResultReceiver;
 
 public class JogoActivity extends AppCompatActivity {
+
+    private static final String TAG = "JogoActivity";
 
     private TextView txtProgresso;
     private TextView txtEnunciado;
@@ -44,16 +45,13 @@ public class JogoActivity extends AppCompatActivity {
     private LinearProgressIndicator progressoTempo;
 
     private Partida partida;
-    private int indiceAtual = 0;
-    private int acertos = 0;
+    private JogoController controller;
 
     private CountDownTimer temporizador;
-    private Handler handler = new Handler(Looper.getMainLooper());
-
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     private boolean partidaSalva = false;
 
-    private boolean respostaConfirmada = false;
     private String respostaSelecionada;
 
     @Override
@@ -72,11 +70,18 @@ public class JogoActivity extends AppCompatActivity {
 
         if (partida == null || partida.getQuestoes() == null
                 || partida.getQuestoes().isEmpty()) {
-            Toast.makeText(this, "Não foi possível iniciar a partida.",
-                    Toast.LENGTH_LONG).show();
+
+            Toast.makeText(
+                    this,
+                    "Não foi possível iniciar a partida.",
+                    Toast.LENGTH_LONG
+            ).show();
+
             finish();
             return;
         }
+
+        controller = new JogoController(partida);
 
         mostrarQuestao();
 
@@ -84,62 +89,86 @@ public class JogoActivity extends AppCompatActivity {
     }
 
     private void mostrarQuestao() {
-        Questao questao = partida.getQuestoes().get(indiceAtual);
 
         txtProgresso.setText(
-                "Questão " + (indiceAtual + 1) +
-                        " de " + partida.getQuestoes().size()
+                "Questão " + (controller.getIndiceAtual() + 1) +
+                        " de " + controller.getQuantidadeQuestoes()
         );
 
         txtEnunciado.setText(
-                Html.fromHtml(questao.getEnunciado(), Html.FROM_HTML_MODE_LEGACY)
+                Html.fromHtml(
+                        controller.obterQuestaoAtual().getEnunciado(),
+                        Html.FROM_HTML_MODE_LEGACY
+                )
         );
 
         grupoAlternativas.removeAllViews();
         txtResultado.setText("");
 
-        respostaConfirmada = false;
         respostaSelecionada = null;
+
         btnAcao.setText("Confirmar resposta");
+        btnAcao.setEnabled(true);
 
-        List<String> alternativas = new ArrayList<>();
-        alternativas.add(questao.getRespostaCorreta());
-
-        if (questao.getRespostasIncorretas() != null) {
-            alternativas.addAll(questao.getRespostasIncorretas());
-        }
-
-        Collections.shuffle(alternativas);
+        List<String> alternativas =
+                controller.obterAlternativasEmbaralhadas();
 
         for (int i = 0; i < alternativas.size(); i++) {
-            grupoAlternativas.addView(criarAlternativa(alternativas.get(i), i));
+            grupoAlternativas.addView(
+                    criarAlternativa(alternativas.get(i), i)
+            );
         }
-
-        btnAcao.setEnabled(true);
 
         iniciarTemporizador();
     }
 
-    // ---------- Visual das alternativas (bloco com letra A, B, C...) ----------
 
     private RadioButton criarAlternativa(String alternativa, int posicao) {
+
         RadioButton rb = new RadioButton(this);
 
+        rb.setId(View.generateViewId());
+
         SpannableStringBuilder texto = new SpannableStringBuilder();
+
         String letra = String.valueOf((char) ('A' + posicao));
+
         texto.append(letra);
-        texto.setSpan(new StyleSpan(Typeface.BOLD), 0, letra.length(),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
         texto.setSpan(
-                new ForegroundColorSpan(ContextCompat.getColor(this, R.color.trivia_primary)),
-                0, letra.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                new StyleSpan(Typeface.BOLD),
+                0,
+                letra.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+
+        texto.setSpan(
+                new ForegroundColorSpan(
+                        ContextCompat.getColor(this, R.color.trivia_primary)
+                ),
+                0,
+                letra.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+
         texto.append("     ");
-        texto.append(Html.fromHtml(alternativa, Html.FROM_HTML_MODE_LEGACY));
+
+        texto.append(
+                Html.fromHtml(
+                        alternativa,
+                        Html.FROM_HTML_MODE_LEGACY
+                )
+        );
 
         rb.setText(texto);
         rb.setTextSize(16);
-        rb.setTextColor(ContextCompat.getColor(this, R.color.trivia_ink));
+
+        rb.setTextColor(
+                ContextCompat.getColor(this, R.color.trivia_ink)
+        );
+
         rb.setTag(alternativa);
+
         rb.setButtonDrawable((android.graphics.drawable.Drawable) null);
         rb.setBackgroundResource(R.drawable.bg_alternativa);
         rb.setGravity(Gravity.CENTER_VERTICAL);
@@ -148,47 +177,76 @@ public class JogoActivity extends AppCompatActivity {
 
         RadioGroup.LayoutParams lp = new RadioGroup.LayoutParams(
                 RadioGroup.LayoutParams.MATCH_PARENT,
-                RadioGroup.LayoutParams.WRAP_CONTENT);
+                RadioGroup.LayoutParams.WRAP_CONTENT
+        );
+
         lp.bottomMargin = dp(12);
+
         rb.setLayoutParams(lp);
 
         return rb;
     }
 
-    // Pinta a alternativa correta de verde e a escolhida (se errada) de vermelho.
-    private void destacarAlternativas(String selecionada, String correta) {
+
+    private void destacarAlternativas(
+            String selecionada,
+            String correta
+    ) {
+
         for (int i = 0; i < grupoAlternativas.getChildCount(); i++) {
-            RadioButton rb = (RadioButton) grupoAlternativas.getChildAt(i);
+
+            RadioButton rb =
+                    (RadioButton) grupoAlternativas.getChildAt(i);
+
             String valor = (String) rb.getTag();
 
             if (valor.equals(correta)) {
-                rb.setBackgroundResource(R.drawable.bg_alternativa_correta);
+
+                rb.setBackgroundResource(
+                        R.drawable.bg_alternativa_correta
+                );
+
             } else if (valor.equals(selecionada)) {
-                rb.setBackgroundResource(R.drawable.bg_alternativa_errada);
+
+                rb.setBackgroundResource(
+                        R.drawable.bg_alternativa_errada
+                );
+
             } else {
+
                 rb.setAlpha(0.55f);
             }
         }
     }
 
     private int dp(int valor) {
-        return Math.round(valor * getResources().getDisplayMetrics().density);
+        return Math.round(
+                valor * getResources().getDisplayMetrics().density
+        );
     }
+
 
     private void executarAcao() {
 
+        if (!controller.isRespostaConfirmada()) {
 
-        if (!respostaConfirmada) {
-
-            int idSelecionado = grupoAlternativas.getCheckedRadioButtonId();
+            int idSelecionado =
+                    grupoAlternativas.getCheckedRadioButtonId();
 
             if (idSelecionado == -1) {
-                Toast.makeText(this, "Selecione uma alternativa.",
-                        Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(
+                        this,
+                        "Selecione uma alternativa.",
+                        Toast.LENGTH_SHORT
+                ).show();
+
                 return;
             }
 
-            RadioButton selecionado = findViewById(idSelecionado);
+            RadioButton selecionado =
+                    grupoAlternativas.findViewById(idSelecionado);
+
             respostaSelecionada = (String) selecionado.getTag();
 
             verificarResposta();
@@ -196,49 +254,159 @@ public class JogoActivity extends AppCompatActivity {
             return;
         }
 
-
         avancarQuestao();
     }
 
     private void verificarResposta() {
 
-        if (temporizador != null) {
-            temporizador.cancel();
-            temporizador = null;
+        cancelarTemporizador();
+
+        JogoController.ResultadoResposta resultado =
+                controller.verificarResposta(respostaSelecionada);
+
+        if (resultado == null) {
+            return;
         }
 
-        Questao questao = partida.getQuestoes().get(indiceAtual);
+        if (resultado.isAcertou()) {
 
-        boolean acertou = respostaSelecionada.equals(
-                questao.getRespostaCorreta()
-        );
-
-        if (acertou) {
-            acertos++;
             txtResultado.setText("Resposta correta!");
+
         } else {
+
             txtResultado.setText(
                     "Resposta incorreta. Correta: " +
                             Html.fromHtml(
-                                    questao.getRespostaCorreta(),
+                                    resultado.getRespostaCorreta(),
                                     Html.FROM_HTML_MODE_LEGACY
                             )
             );
         }
 
-        respostaConfirmada = true;
+        txtResultado.setTextColor(
+                ContextCompat.getColor(
+                        this,
+                        resultado.isAcertou()
+                                ? R.color.trivia_correct
+                                : R.color.trivia_wrong
+                )
+        );
+
+        destacarAlternativas(
+                respostaSelecionada,
+                resultado.getRespostaCorreta()
+        );
+
         btnAcao.setText("Próxima questão");
 
-        txtResultado.setTextColor(ContextCompat.getColor(
-                this, acertou ? R.color.trivia_correct : R.color.trivia_wrong));
-        destacarAlternativas(respostaSelecionada, questao.getRespostaCorreta());
+        desabilitarAlternativas();
+    }
 
+    private void desabilitarAlternativas() {
 
         for (int i = 0; i < grupoAlternativas.getChildCount(); i++) {
             grupoAlternativas.getChildAt(i).setEnabled(false);
         }
     }
 
+    private void avancarQuestao() {
+
+        cancelarTemporizador();
+
+        boolean existeProximaQuestao = controller.avancarQuestao();
+
+        if (existeProximaQuestao) {
+
+            mostrarQuestao();
+
+        } else {
+
+            finalizarPartida();
+        }
+    }
+
+
+    private void iniciarTemporizador() {
+
+        long tempo = partida.getTempoPorQuestao() * 1000L;
+
+        progressoTempo.setMax((int) tempo);
+        progressoTempo.setProgressCompat((int) tempo, false);
+
+        temporizador = new CountDownTimer(tempo, 1000) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+                long segundos = millisUntilFinished / 1000;
+
+                progressoTempo.setProgressCompat(
+                        (int) millisUntilFinished,
+                        true
+                );
+
+                txtProgresso.setText(
+                        "Questão " + (controller.getIndiceAtual() + 1) +
+                                " de " + controller.getQuantidadeQuestoes() +
+                                " | Tempo: " + segundos + "s"
+                );
+            }
+
+            @Override
+            public void onFinish() {
+
+                temporizador = null;
+
+                progressoTempo.setProgressCompat(0, true);
+
+                tempoEsgotado();
+            }
+
+        }.start();
+    }
+
+    private void cancelarTemporizador() {
+
+        if (temporizador != null) {
+
+            temporizador.cancel();
+            temporizador = null;
+        }
+    }
+
+    private void tempoEsgotado() {
+
+        String respostaCorreta = controller.registrarTempoEsgotado();
+
+        if (respostaCorreta == null) {
+            return;
+        }
+
+        txtResultado.setText(
+                "Tempo esgotado! Você não respondeu a questão."
+        );
+
+        txtResultado.setTextColor(
+                ContextCompat.getColor(
+                        this,
+                        R.color.trivia_wrong
+                )
+        );
+
+        destacarAlternativas(null, respostaCorreta);
+
+        desabilitarAlternativas();
+
+        btnAcao.setEnabled(false);
+
+        handler.postDelayed(() -> {
+
+            btnAcao.setEnabled(true);
+
+            avancarQuestao();
+
+        }, 1500);
+    }
 
 
     private void finalizarPartida() {
@@ -248,32 +416,32 @@ public class JogoActivity extends AppCompatActivity {
         }
 
         partidaSalva = true;
+
         btnAcao.setEnabled(false);
 
-
-        partida.setQuantidadeAcertos(acertos);
-        partida.setQuantidadeErros(
-                partida.getQuestoes().size() - acertos
-        );
-        partida.setPontuacao(acertos * 100);
-
+        controller.finalizarPartida();
 
         ResultReceiver receiver = new ResultReceiver(
                 new Handler(Looper.getMainLooper())
         ) {
-            @Override
-            protected void onReceiveResult(int resultCode, Bundle resultData) {
 
-                boolean salvo = resultData.getBoolean("salvo");
+            @Override
+            protected void onReceiveResult(
+                    int resultCode,
+                    Bundle resultData
+            ) {
+
+                boolean salvo = resultData != null
+                        && resultData.getBoolean("salvo");
 
                 if (!salvo) {
+
                     Toast.makeText(
                             JogoActivity.this,
                             "Não foi possível salvar o resultado.",
                             Toast.LENGTH_LONG
                     ).show();
                 }
-
 
                 Intent intent = new Intent(
                         JogoActivity.this,
@@ -287,17 +455,23 @@ public class JogoActivity extends AppCompatActivity {
 
                 intent.putExtra(
                         "total_questoes",
-                        partida.getQuestoes().size()
+                        controller.getQuantidadeQuestoes()
                 );
 
-                intent.putExtra("acertos", acertos);
-                intent.putExtra("pontuacao", partida.getPontuacao());
+                intent.putExtra(
+                        "acertos",
+                        controller.getAcertos()
+                );
+
+                intent.putExtra(
+                        "pontuacao",
+                        partida.getPontuacao()
+                );
 
                 startActivity(intent);
                 finish();
             }
         };
-
 
         Intent serviceIntent = new Intent(
                 JogoActivity.this,
@@ -318,117 +492,44 @@ public class JogoActivity extends AppCompatActivity {
     }
 
 
-    private void iniciarTemporizador() {
-
-        long tempo = partida.getTempoPorQuestao() * 1000L;
-
-        progressoTempo.setMax((int) tempo);
-        progressoTempo.setProgressCompat((int) tempo, false);
-
-        temporizador = new CountDownTimer(tempo, 1000) {
-
-            @Override
-            public void onTick(long millisUntilFinished) {
-
-                long segundos = millisUntilFinished / 1000;
-
-                progressoTempo.setProgressCompat((int) millisUntilFinished, true);
-
-                txtProgresso.setText(
-                        "Questão " + (indiceAtual + 1) +
-                                " de " + partida.getQuestoes().size() +
-                                " | Tempo: " + segundos + "s"
-                );
-            }
-
-            @Override
-            public void onFinish() {
-
-                temporizador = null;
-
-                progressoTempo.setProgressCompat(0, true);
-                tempoEsgotado();
-            }
-
-        }.start();
-    }
-
-    private void tempoEsgotado() {
-
-        respostaConfirmada = true;
-
-        txtResultado.setText(
-                "Tempo esgotado! Você não respondeu a questão."
-        );
-        txtResultado.setTextColor(
-                ContextCompat.getColor(this, R.color.trivia_wrong));
-        destacarAlternativas(null,
-                partida.getQuestoes().get(indiceAtual).getRespostaCorreta());
-
-        btnAcao.setEnabled(false);
-
-        for (int i = 0; i < grupoAlternativas.getChildCount(); i++) {
-            grupoAlternativas.getChildAt(i).setEnabled(false);
-        }
-
-        handler.postDelayed(() -> {
-            avancarQuestao();
-        }, 1500);
-    }
-
-    private void avancarQuestao() {
-
-        indiceAtual++;
-
-        if (indiceAtual < partida.getQuestoes().size()) {
-
-            mostrarQuestao();
-
-        } else {
-
-            finalizarPartida();
-        }
-    }
-
-
     @Override
     protected void onStart() {
         super.onStart();
-
+        Log.d(TAG, "onStart");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
+        Log.d(TAG, "onResume");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d(TAG, "onPause");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        Log.d(TAG, "onStop");
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
+        Log.d(TAG, "onRestart");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        if (temporizador != null) {
-            temporizador.cancel();
-            temporizador = null;
-        }
+        cancelarTemporizador();
 
         handler.removeCallbacksAndMessages(null);
+
+        Log.d(TAG, "onDestroy");
     }
-
-
-}
+}

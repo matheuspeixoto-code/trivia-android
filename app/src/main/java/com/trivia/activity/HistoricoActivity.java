@@ -1,6 +1,6 @@
+
 package com.trivia.activity;
 
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,38 +10,39 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.trivia.R;
-
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.trivia.database.PartidaRepositorio;
+import com.trivia.R;
+import com.trivia.controller.HistoricoController;
 
-import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.List;
 
 public class HistoricoActivity extends AppCompatActivity {
+
+    private static final String TAG = "HistoricoActivity";
 
     private LinearLayout layoutCarregando;
     private LinearLayout layoutHistorico;
 
     private ListView listHistorico;
-
-    private String nomeJogador;
     private TextView txtHistoricoVazio;
     private Button btnVoltarMenu;
 
-    private final ExecutorService executor =
-            Executors.newSingleThreadExecutor();
+    private String nomeJogador;
+
+    private HistoricoController controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historico);
+
         nomeJogador = getIntent().getStringExtra("nome_jogador");
 
-
         inicializarComponentes();
+
+        controller = new HistoricoController(this);
+
         configurarBotoes();
 
         carregarHistorico();
@@ -68,144 +69,104 @@ public class HistoricoActivity extends AppCompatActivity {
         layoutCarregando.setVisibility(View.VISIBLE);
         layoutHistorico.setVisibility(View.GONE);
 
-        executor.execute(() -> {
+        controller.carregarHistorico(
+                nomeJogador,
+                new HistoricoController.HistoricoCallback() {
 
-            ArrayList<String> partidas = new ArrayList<>();
+                    @Override
+                    public void onSucesso(List<String> partidas) {
 
-            boolean consultaRealizada = false;
+                        exibirHistorico(partidas);
+                    }
 
-            try {
+                    @Override
+                    public void onErro() {
 
-                PartidaRepositorio repositorio =
-                        new PartidaRepositorio(this);
-
-                try (Cursor cursor = repositorio.listarHistorico(nomeJogador)) {
-
-                    if (cursor != null) {
-
-                        while (cursor.moveToNext()) {
-
-                            String nome = cursor.getString(
-                                    cursor.getColumnIndexOrThrow("nome_jogador")
-                            );
-
-                            String data = cursor.getString(
-                                    cursor.getColumnIndexOrThrow("data")
-                            );
-
-                            int quantidade = cursor.getInt(
-                                    cursor.getColumnIndexOrThrow("quantidade_questoes")
-                            );
-
-                            int acertos = cursor.getInt(
-                                    cursor.getColumnIndexOrThrow("acertos")
-                            );
-
-                            int erros = quantidade - acertos;
-
-                            int pontuacao = cursor.getInt(
-                                    cursor.getColumnIndexOrThrow("pontuacao")
-                            );
-
-                            String item =
-                                    "Jogador: " + nome +
-                                            "\nData: " + data +
-                                            "\nQuestões: " + quantidade +
-                                            "\nAcertos: " + acertos +
-                                            " | Erros: " + erros +
-                                            "\nPontuação: " + pontuacao;
-
-                            partidas.add(item);
-                        }
-
-                        consultaRealizada = true;
+                        exibirMensagemHistorico(
+                                "Não foi possível carregar o histórico."
+                        );
                     }
                 }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            boolean sucesso = consultaRealizada;
-
-            runOnUiThread(() -> {
-
-                if (isFinishing() || isDestroyed()) {
-                    return;
-                }
-
-                layoutCarregando.setVisibility(View.GONE);
-                layoutHistorico.setVisibility(View.VISIBLE);
-
-                if (!sucesso) {
-
-                    txtHistoricoVazio.setText(
-                            "Não foi possível carregar o histórico."
-                    );
-
-                    txtHistoricoVazio.setVisibility(View.VISIBLE);
-                    listHistorico.setVisibility(View.GONE);
-
-                } else if (partidas.isEmpty()) {
-
-                    txtHistoricoVazio.setText(
-                            "Nenhuma partida encontrada."
-                    );
-
-                    txtHistoricoVazio.setVisibility(View.VISIBLE);
-                    listHistorico.setVisibility(View.GONE);
-
-                } else {
-
-                    txtHistoricoVazio.setVisibility(View.GONE);
-                    listHistorico.setVisibility(View.VISIBLE);
-
-                    ArrayAdapter<String> adapter =
-                            new ArrayAdapter<>(
-                                    this,
-                                    R.layout.item_historico,
-                                    partidas
-                            );
-
-                    listHistorico.setAdapter(adapter);
-                }
-            });
-        });
+        );
     }
+
+    private void exibirHistorico(List<String> partidas) {
+
+        layoutCarregando.setVisibility(View.GONE);
+        layoutHistorico.setVisibility(View.VISIBLE);
+
+        if (partidas.isEmpty()) {
+
+            exibirMensagemHistorico(
+                    "Nenhuma partida encontrada."
+            );
+
+            return;
+        }
+
+        txtHistoricoVazio.setVisibility(View.GONE);
+        listHistorico.setVisibility(View.VISIBLE);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                R.layout.item_historico,
+                partidas
+        );
+
+        listHistorico.setAdapter(adapter);
+    }
+
+    private void exibirMensagemHistorico(String mensagem) {
+
+        layoutCarregando.setVisibility(View.GONE);
+        layoutHistorico.setVisibility(View.VISIBLE);
+
+        txtHistoricoVazio.setText(mensagem);
+        txtHistoricoVazio.setVisibility(View.VISIBLE);
+
+        listHistorico.setVisibility(View.GONE);
+    }
+
 
     @Override
     protected void onStart() {
         super.onStart();
-
+        Log.d(TAG, "onStart");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
+        Log.d(TAG, "onResume");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
+        Log.d(TAG, "onPause");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-
+        Log.d(TAG, "onStop");
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-
+        Log.d(TAG, "onRestart");
     }
 
     @Override
     protected void onDestroy() {
-        executor.shutdown();
+
+        if (controller != null) {
+            controller.encerrar();
+        }
+
         super.onDestroy();
+
+        Log.d(TAG, "onDestroy");
     }
 }

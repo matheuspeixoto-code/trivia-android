@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.trivia.R;
+import com.trivia.controller.ResultadoController;
 
 public class ResultadoActivity extends AppCompatActivity {
 
@@ -21,7 +22,7 @@ public class ResultadoActivity extends AppCompatActivity {
     private Button btnJogarNovamente;
     private Button btnVoltarMenu;
 
-    private String nomeJogador;
+    private ResultadoController controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,19 +48,38 @@ public class ResultadoActivity extends AppCompatActivity {
 
     private void carregarResultado() {
 
-        nomeJogador = getIntent().getStringExtra("nome_jogador");
+        String nomeJogador = getIntent().getStringExtra("nome_jogador");
 
         int totalQuestoes = getIntent().getIntExtra("total_questoes", 0);
         int acertos = getIntent().getIntExtra("acertos", 0);
         int pontuacao = getIntent().getIntExtra("pontuacao", 0);
 
-        int erros = totalQuestoes - acertos;
+        controller = new ResultadoController(
+                nomeJogador,
+                totalQuestoes,
+                acertos,
+                pontuacao
+        );
 
-        txtNomeJogador.setText("Jogador: " + nomeJogador);
-        txtTotalQuestoes.setText("Quantidade de questões: " + totalQuestoes);
-        txtAcertos.setText("Acertos: " + acertos);
-        txtErros.setText("Erros: " + erros);
-        txtPontuacao.setText("Pontuação: " + pontuacao + " pontos");
+        txtNomeJogador.setText(
+                "Jogador: " + controller.getNomeJogador()
+        );
+
+        txtTotalQuestoes.setText(
+                "Quantidade de questões: " + controller.getTotalQuestoes()
+        );
+
+        txtAcertos.setText(
+                "Acertos: " + controller.getAcertos()
+        );
+
+        txtErros.setText(
+                "Erros: " + controller.getErros()
+        );
+
+        txtPontuacao.setText(
+                "Pontuação: " + controller.getPontuacao() + " pontos"
+        );
     }
 
     private void configurarBotoes() {
@@ -71,7 +91,10 @@ public class ResultadoActivity extends AppCompatActivity {
                     ConfiguracaoActivity.class
             );
 
-            intent.putExtra("nome_jogador", nomeJogador);
+            intent.putExtra(
+                    "nome_jogador",
+                    controller.getNomeJogador()
+            );
 
             startActivity(intent);
             finish();
@@ -84,7 +107,10 @@ public class ResultadoActivity extends AppCompatActivity {
                     MenuActivity.class
             );
 
-            intent.putExtra("nome_jogador", nomeJogador);
+            intent.putExtra(
+                    "nome_jogador",
+                    controller.getNomeJogador()
+            );
 
             intent.setFlags(
                     Intent.FLAG_ACTIVITY_CLEAR_TOP |
