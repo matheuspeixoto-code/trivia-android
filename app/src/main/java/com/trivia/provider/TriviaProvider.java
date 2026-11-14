@@ -18,6 +18,9 @@ public class TriviaProvider extends ContentProvider {
     public static final Uri URI_QUESTOES =
             Uri.parse("content://" + AUTHORITY + "/questao");
 
+    public static final Uri URI_CATEGORIAS =
+            Uri.parse("content://" + AUTHORITY + "/categoria");
+
     public static final Uri URI_JOGADORES =
             Uri.parse("content://" + AUTHORITY + "/jogador");
 
@@ -31,18 +34,18 @@ public class TriviaProvider extends ContentProvider {
     private static final int QUESTOES = 1;
     private static final int JOGADORES = 2;
     private static final int PARTIDAS = 3;
-
     private static final int HISTORICO = 4;
+    private static final int CATEGORIAS = 5;
 
-    private static final UriMatcher uriMatcher = new UriMatcher(
-            UriMatcher.NO_MATCH
-    );
+    private static final UriMatcher uriMatcher =
+            new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
         uriMatcher.addURI(AUTHORITY, "questao", QUESTOES);
         uriMatcher.addURI(AUTHORITY, "jogador", JOGADORES);
         uriMatcher.addURI(AUTHORITY, "partida", PARTIDAS);
         uriMatcher.addURI(AUTHORITY, "historico", HISTORICO);
+        uriMatcher.addURI(AUTHORITY, "categoria", CATEGORIAS);
     }
 
     private BancoDados bancoDados;
@@ -66,8 +69,13 @@ public class TriviaProvider extends ContentProvider {
         String tabela;
 
         switch (uriMatcher.match(uri)) {
+
             case QUESTOES:
                 tabela = BancoDados.TABELA_QUESTAO;
+                break;
+
+            case CATEGORIAS:
+                tabela = BancoDados.TABELA_CATEGORIA;
                 break;
 
             case JOGADORES:
@@ -77,6 +85,7 @@ public class TriviaProvider extends ContentProvider {
             case PARTIDAS:
                 tabela = BancoDados.TABELA_PARTIDA;
                 break;
+
             case HISTORICO:
 
                 String sql =
@@ -94,8 +103,11 @@ public class TriviaProvider extends ContentProvider {
                         "ORDER BY partida.id DESC";
 
                 return db.rawQuery(sql, selectionArgs);
+
             default:
-                throw new IllegalArgumentException("URI desconhecida: " + uri);
+                throw new IllegalArgumentException(
+                        "URI desconhecida: " + uri
+                );
         }
 
         return db.query(
@@ -117,8 +129,13 @@ public class TriviaProvider extends ContentProvider {
         String tabela;
 
         switch (uriMatcher.match(uri)) {
+
             case QUESTOES:
                 tabela = BancoDados.TABELA_QUESTAO;
+                break;
+
+            case CATEGORIAS:
+                tabela = BancoDados.TABELA_CATEGORIA;
                 break;
 
             case JOGADORES:
@@ -130,7 +147,9 @@ public class TriviaProvider extends ContentProvider {
                 break;
 
             default:
-                throw new IllegalArgumentException("URI desconhecida: " + uri);
+                throw new IllegalArgumentException(
+                        "URI desconhecida: " + uri
+                );
         }
 
         long id = db.insert(tabela, null, values);
@@ -139,7 +158,10 @@ public class TriviaProvider extends ContentProvider {
             return null;
         }
 
-        return Uri.withAppendedPath(uri, String.valueOf(id));
+        return Uri.withAppendedPath(
+                uri,
+                String.valueOf(id)
+        );
     }
 
     @Override
@@ -148,6 +170,7 @@ public class TriviaProvider extends ContentProvider {
             ContentValues values,
             String selection,
             String[] selectionArgs) {
+
         return 0;
     }
 
@@ -156,6 +179,7 @@ public class TriviaProvider extends ContentProvider {
             Uri uri,
             String selection,
             String[] selectionArgs) {
+
         return 0;
     }
 

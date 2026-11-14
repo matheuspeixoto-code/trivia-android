@@ -10,7 +10,6 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.trivia.R;
-import com.trivia.database.TesteBancoDados;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TesteBancoDados.executar(this);
 
         Log.d(TAG, "onCreate() chamado");
 
