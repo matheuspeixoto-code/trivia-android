@@ -1,6 +1,8 @@
 package com.trivia.activity;
 
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.Spinner;
 
 import com.trivia.R;
 import com.trivia.api.ApiService;
+import com.trivia.broadcast.ConexaoReceiver;
 import com.trivia.model.Categoria;
 import com.trivia.model.CategoriasResponse;
 import com.trivia.model.Jogador;
@@ -52,6 +55,10 @@ public class ConfiguracaoActivity extends AppCompatActivity
     private Button btnIniciarPartida;
     private static final String TAG = "ConfiguracaoActivity";
 
+    private ConexaoReceiver conexaoReceiver = new ConexaoReceiver();
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +88,13 @@ public class ConfiguracaoActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+
+        IntentFilter filtro = new IntentFilter(
+                ConnectivityManager.CONNECTIVITY_ACTION
+        );
+
+        registerReceiver(conexaoReceiver, filtro);
+
         Log.d(TAG, "onStart() chamado");
     }
 
@@ -100,6 +114,8 @@ public class ConfiguracaoActivity extends AppCompatActivity
     protected void onStop() {
         super.onStop();
         Log.d(TAG, "onStop() chamado");
+
+        unregisterReceiver(conexaoReceiver);
     }
 
     @Override
