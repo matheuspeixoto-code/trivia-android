@@ -1,40 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/trivia_bg"
+    android:fitsSystemWindows="true"
     android:orientation="vertical"
-    android:padding="20dp">
+    android:paddingStart="28dp"
+    android:paddingTop="24dp"
+    android:paddingEnd="28dp"
+    android:paddingBottom="28dp">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Histórico de Partidas"
-        android:textSize="26sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="20dp"
+        android:text="Histórico de partidas"
+        android:textAppearance="@style/TextAppearance.Trivia.Title" />
 
     <LinearLayout
         android:id="@+id/layoutCarregando"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical"
         android:gravity="center"
+        android:orientation="vertical"
         android:visibility="visible">
 
-        <ProgressBar
+        <com.google.android.material.progressindicator.CircularProgressIndicator
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="Carregando histórico..."
-            android:layout_marginTop="12dp"
-            android:textSize="16sp"/>
-
+            android:textAppearance="@style/TextAppearance.Trivia.Muted" />
     </LinearLayout>
 
     <LinearLayout
@@ -49,25 +51,29 @@
             android:id="@+id/txtHistoricoVazio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Nenhuma partida encontrada."
-            android:textSize="16sp"
+            android:layout_marginTop="48dp"
             android:gravity="center"
-            android:visibility="gone"
-            android:layout_marginTop="30dp"/>
+            android:text="Nenhuma partida encontrada."
+            android:textAppearance="@style/TextAppearance.Trivia.Muted"
+            android:visibility="gone" />
 
         <ListView
             android:id="@+id/listHistorico"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="#DDDDDD"
-            android:dividerHeight="1dp"/>
+            android:clipToPadding="false"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="12dp"
+            android:paddingBottom="12dp"
+            android:scrollbars="none" />
 
     </LinearLayout>
 
     <Button
         android:id="@+id/btnVoltarMenu"
+        style="@style/Widget.Trivia.Button.Outlined"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Voltar ao menu"/>
+        android:text="Voltar ao menu" />
 
 </LinearLayout>
