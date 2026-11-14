@@ -2,7 +2,9 @@ package com.trivia.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Html;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -35,6 +37,9 @@ public class JogoActivity extends AppCompatActivity {
     private int indiceAtual = 0;
     private int acertos = 0;
 
+    private CountDownTimer temporizador;
+    private Handler handler = new Handler(Looper.getMainLooper());
+
 
     private boolean partidaSalva = false;
 
@@ -52,7 +57,6 @@ public class JogoActivity extends AppCompatActivity {
         grupoAlternativas = findViewById(R.id.grupoAlternativas);
         btnAcao = findViewById(R.id.btnAcao);
 
-        // Recupera a partida enviada pela ConfiguracaoActivity.
         partida = (Partida) getIntent().getSerializableExtra("partida");
 
         if (partida == null || partida.getQuestoes() == null
@@ -76,7 +80,6 @@ public class JogoActivity extends AppCompatActivity {
                         " de " + partida.getQuestoes().size()
         );
 
-        // Converte entidades HTML da API para caracteres normais.
         txtEnunciado.setText(
                 Html.fromHtml(questao.getEnunciado(), Html.FROM_HTML_MODE_LEGACY)
         );
@@ -88,7 +91,6 @@ public class JogoActivity extends AppCompatActivity {
         respostaSelecionada = null;
         btnAcao.setText("Confirmar resposta");
 
-        // Junta a resposta correta com as incorretas.
         List<String> alternativas = new ArrayList<>();
         alternativas.add(questao.getRespostaCorreta());
 
@@ -96,7 +98,6 @@ public class JogoActivity extends AppCompatActivity {
             alternativas.addAll(questao.getRespostasIncorretas());
         }
 
-        // Embaralha para a resposta correta não ficar sempre na mesma posição.
         Collections.shuffle(alternativas);
 
         for (String alternativa : alternativas) {
@@ -111,6 +112,10 @@ public class JogoActivity extends AppCompatActivity {
 
             grupoAlternativas.addView(radioButton);
         }
+
+        btnAcao.setEnabled(true);
+
+        iniciarTemporizador();
     }
 
     private void executarAcao() {
@@ -135,16 +140,16 @@ public class JogoActivity extends AppCompatActivity {
         }
 
 
-        indiceAtual++;
-
-        if (indiceAtual < partida.getQuestoes().size()) {
-            mostrarQuestao();
-        } else {
-            finalizarPartida();
-        }
+        avancarQuestao();
     }
 
     private void verificarResposta() {
+
+        if (temporizador != null) {
+            temporizador.cancel();
+            temporizador = null;
+        }
+
         Questao questao = partida.getQuestoes().get(indiceAtual);
 
         boolean acertou = respostaSelecionada.equals(
@@ -249,6 +254,109 @@ public class JogoActivity extends AppCompatActivity {
         );
 
         startService(serviceIntent);
+    }
+
+
+    private void iniciarTemporizador() {
+
+        long tempo = partida.getTempoPorQuestao() * 1000L;
+
+        temporizador = new CountDownTimer(tempo, 1000) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+                long segundos = millisUntilFinished / 1000;
+
+                txtProgresso.setText(
+                        "Questão " + (indiceAtual + 1) +
+                                " de " + partida.getQuestoes().size() +
+                                " | Tempo: " + segundos + "s"
+                );
+            }
+
+            @Override
+            public void onFinish() {
+
+                temporizador = null;
+
+                tempoEsgotado();
+            }
+
+        }.start();
+    }
+
+    private void tempoEsgotado() {
+
+        respostaConfirmada = true;
+
+        txtResultado.setText(
+                "Tempo esgotado! Você não respondeu a questão."
+        );
+
+        btnAcao.setEnabled(false);
+
+        for (int i = 0; i < grupoAlternativas.getChildCount(); i++) {
+            grupoAlternativas.getChildAt(i).setEnabled(false);
+        }
+
+        handler.postDelayed(() -> {
+            avancarQuestao();
+        }, 1500);
+    }
+
+    private void avancarQuestao() {
+
+        indiceAtual++;
+
+        if (indiceAtual < partida.getQuestoes().size()) {
+
+            mostrarQuestao();
+
+        } else {
+
+            finalizarPartida();
+        }
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (temporizador != null) {
+            temporizador.cancel();
+            temporizador = null;
+        }
+
+        handler.removeCallbacksAndMessages(null);
     }
 
 

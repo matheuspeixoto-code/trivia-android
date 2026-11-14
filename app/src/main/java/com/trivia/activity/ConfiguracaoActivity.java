@@ -341,18 +341,32 @@ public class ConfiguracaoActivity extends AppCompatActivity
 
                 QuestoesResponse resultado = response.body();
 
-                if (resultado.getCodigoResposta() != 0
-                        || resultado.getQuestoes() == null
+                if (resultado.getCodigoResposta() != 0) {
+
+                    int codigo = resultado.getCodigoResposta();
+
+                    String mensagem = obterMensagemErroApi(codigo);
+
+                    Toast.makeText(
+                            ConfiguracaoActivity.this,
+                            mensagem,
+                            Toast.LENGTH_LONG
+                    ).show();
+
+                    Log.e(TAG, "Erro da API: " + codigo + " - " + mensagem);
+
+                    return;
+                }
+
+                if (resultado.getQuestoes() == null
                         || resultado.getQuestoes().isEmpty()) {
 
                     Toast.makeText(
                             ConfiguracaoActivity.this,
-                            "Não foi possível encontrar questões para essa configuração.",
+                            "A API não retornou questões.",
                             Toast.LENGTH_LONG
                     ).show();
 
-                    Log.e(TAG, "Código da API: "
-                            + resultado.getCodigoResposta());
                     return;
                 }
 
@@ -452,6 +466,27 @@ public class ConfiguracaoActivity extends AppCompatActivity
                     public void onStopTrackingTouch(SeekBar seekBar) {
                     }
                 });
+    }
+
+    private String obterMensagemErroApi(int codigo) {
+
+        switch (codigo) {
+
+            case 1:
+                return "Não existem questões suficientes para essa configuração.";
+
+            case 2:
+                return "Os parâmetros enviados para a API são inválidos.";
+
+            case 3:
+                return "Token de sessão não encontrado.";
+
+            case 4:
+                return "O token de sessão foi esgotado.";
+
+            default:
+                return "Ocorreu um erro desconhecido ao buscar questões.";
+        }
     }
 
 
