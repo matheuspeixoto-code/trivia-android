@@ -1,4 +1,3 @@
-
 package com.trivia.broadcast;
 
 import android.content.BroadcastReceiver;

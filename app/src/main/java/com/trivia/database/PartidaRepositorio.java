@@ -1,4 +1,3 @@
-
 package com.trivia.database;
 
 import android.content.ContentValues;

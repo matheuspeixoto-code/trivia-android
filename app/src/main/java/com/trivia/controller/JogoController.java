@@ -1,4 +1,3 @@
-
 package com.trivia.controller;
 
 import com.trivia.model.Partida;

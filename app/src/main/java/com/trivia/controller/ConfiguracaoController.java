@@ -1,4 +1,3 @@
-
 package com.trivia.controller;
 
 import android.content.Context;

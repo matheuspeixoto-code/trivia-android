@@ -1,4 +1,3 @@
-
 package com.trivia.activity;
 
 import android.os.Bundle;
