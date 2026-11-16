@@ -228,6 +228,15 @@ public class JogoActivity extends AppCompatActivity {
 
     private void executarAcao() {
 
+
+        Log.d(TAG, "executarAcao chamada");
+        Log.d(TAG, "Resposta confirmada: " +
+                controller.isRespostaConfirmada());
+        Log.d(TAG, "Alternativa selecionada: " +
+                grupoAlternativas.getCheckedRadioButtonId());
+
+
+
         if (!controller.isRespostaConfirmada()) {
 
             int idSelecionado =
@@ -244,8 +253,23 @@ public class JogoActivity extends AppCompatActivity {
                 return;
             }
 
-            RadioButton selecionado =
+            View viewSelecionada =
                     grupoAlternativas.findViewById(idSelecionado);
+
+            if (!(viewSelecionada instanceof RadioButton)) {
+                Log.e(TAG, "Não foi possível localizar a alternativa selecionada.");
+
+                Toast.makeText(
+                        this,
+                        "Erro ao identificar a alternativa. Selecione novamente.",
+                        Toast.LENGTH_SHORT
+                ).show();
+
+                grupoAlternativas.clearCheck();
+                return;
+            }
+
+            RadioButton selecionado = (RadioButton) viewSelecionada;
 
             respostaSelecionada = (String) selecionado.getTag();
 

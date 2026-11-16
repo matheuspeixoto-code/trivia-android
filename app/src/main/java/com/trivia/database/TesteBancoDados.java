@@ -1,4 +1,4 @@
-package com.trivia.database;
+/*package com.trivia.database;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -71,3 +71,4 @@ public class TesteBancoDados {
         });
     }
 }
+*/

@@ -37,13 +37,14 @@ public class ConfiguracaoController {
     private Call<CategoriasResponse> chamadaCategorias;
     private Call<QuestoesResponse> chamadaQuestoes;
 
-    private boolean encerrado = false;
+    private volatile boolean encerrado = false;
 
     public interface CategoriasCallback {
         void onSucesso(List<Categoria> categorias, boolean locais);
     }
 
     public interface PartidaCallback {
+
         void onErroValidacao(String mensagem);
 
         void onErro(String mensagem);
@@ -58,6 +59,7 @@ public class ConfiguracaoController {
     }
 
     public String validarQuantidade(String texto) {
+
         if (texto == null || texto.trim().isEmpty()) {
             return "Informe a quantidade de questões.";
         }
@@ -95,37 +97,25 @@ public class ConfiguracaoController {
                         && response.body() != null
                         && response.body().getCategorias() != null) {
 
-                    List<Categoria> categoriasApi =
-                            response.body().getCategorias();
+                    List<Categoria> categorias =
+                            new ArrayList<>();
 
-                    List<Categoria> categorias = new ArrayList<>();
+                    categorias.add(
+                            new Categoria(0, "Todas as categorias")
+                    );
 
-                    categorias.add(new Categoria(0, "Todas as categorias"));
-                    categorias.addAll(categoriasApi);
+                    categorias.addAll(
+                            response.body().getCategorias()
+                    );
 
-                    executorBanco.execute(() -> {
+                    Log.d(TAG, "Categorias carregadas pela API.");
 
-                        try {
-                            QuestaoRepositorio repositorio =
-                                    new QuestaoRepositorio(context);
-
-                            repositorio.salvarCategoriasParaOffline(categoriasApi);
-
-                            Log.d(TAG, "Categorias armazenadas no SQLite.");
-
-                        } catch (Exception e) {
-                            Log.e(TAG, "Erro ao salvar categorias.", e);
-                        }
-
-                        handler.post(() -> {
-                            if (!encerrado) {
-                                callback.onSucesso(categorias, false);
-                            }
-                        });
-                    });
+                    callback.onSucesso(categorias, false);
 
                 } else {
-                    Log.w(TAG, "Falha ao carregar categorias online.");
+
+                    Log.w(TAG, "Falha ao carregar categorias pela API.");
+
                     carregarCategoriasOffline(callback);
                 }
             }
@@ -137,14 +127,19 @@ public class ConfiguracaoController {
 
                 if (encerrado || call.isCanceled()) return;
 
-                Log.w(TAG, "Falha na conexão ao carregar categorias.", t);
+                Log.w(
+                        TAG,
+                        "Erro de conexão ao carregar categorias.",
+                        t
+                );
 
                 carregarCategoriasOffline(callback);
             }
         });
     }
 
-    private void carregarCategoriasOffline(CategoriasCallback callback) {
+    private void carregarCategoriasOffline(
+            CategoriasCallback callback) {
 
         executorBanco.execute(() -> {
 
@@ -157,6 +152,7 @@ public class ConfiguracaoController {
                 categorias = repositorio.listarCategoriasOffline();
 
             } catch (Exception e) {
+
                 Log.e(TAG, "Erro ao consultar categorias locais.", e);
 
                 categorias = new ArrayList<>();
@@ -167,12 +163,15 @@ public class ConfiguracaoController {
             }
 
             if (categorias.isEmpty()) {
-                categorias.add(new Categoria(0, "Todas as categorias"));
+                categorias.add(
+                        new Categoria(0, "Todas as categorias")
+                );
             }
 
             List<Categoria> resultado = categorias;
 
             handler.post(() -> {
+
                 if (!encerrado) {
                     callback.onSucesso(resultado, true);
                 }
@@ -205,29 +204,19 @@ public class ConfiguracaoController {
         String nomeCategoria = categoria.getNome();
 
         Integer categoriaApiId =
-                categoria.getId() == 0 ? null : categoria.getId();
+                categoria.getId() == 0
+                        ? null
+                        : categoria.getId();
 
-        if (categoriaApiId == null) {
-            buscarQuestoesOnline(
-                    quantidade,
-                    null,
-                    nomeCategoria,
-                    dificuldade,
-                    tempo,
-                    nomeJogador,
-                    callback
-            );
-        } else {
-            buscarQuestoesOnline(
-                    quantidade,
-                    categoriaApiId,
-                    nomeCategoria,
-                    dificuldade,
-                    tempo,
-                    nomeJogador,
-                    callback
-            );
-        }
+        buscarQuestoesOnline(
+                quantidade,
+                categoriaApiId,
+                nomeCategoria,
+                dificuldade,
+                tempo,
+                nomeJogador,
+                callback
+        );
     }
 
     private void buscarQuestoesOnline(
@@ -256,11 +245,20 @@ public class ConfiguracaoController {
 
                 if (encerrado) return;
 
-                if (!response.isSuccessful() || response.body() == null) {
+                if (!response.isSuccessful()
+                        || response.body() == null) {
+
+                    Log.w(TAG, "Resposta inválida da API.");
+
                     buscarQuestoesOffline(
-                            quantidade, nomeCategoria, dificuldade,
-                            tempo, nomeJogador, callback
+                            quantidade,
+                            nomeCategoria,
+                            dificuldade,
+                            tempo,
+                            nomeJogador,
+                            callback
                     );
+
                     return;
                 }
 
@@ -270,14 +268,22 @@ public class ConfiguracaoController {
                         || resultado.getQuestoes() == null
                         || resultado.getQuestoes().isEmpty()) {
 
-                    Log.w(TAG, obterMensagemErroApi(
-                            resultado.getCodigoResposta()
-                    ));
+                    Log.w(
+                            TAG,
+                            obterMensagemErroApi(
+                                    resultado.getCodigoResposta()
+                            )
+                    );
 
                     buscarQuestoesOffline(
-                            quantidade, nomeCategoria, dificuldade,
-                            tempo, nomeJogador, callback
+                            quantidade,
+                            nomeCategoria,
+                            dificuldade,
+                            tempo,
+                            nomeJogador,
+                            callback
                     );
+
                     return;
                 }
 
@@ -286,20 +292,33 @@ public class ConfiguracaoController {
                 );
 
                 if (questoes.size() < quantidade) {
-                    buscarQuestoesOffline(
-                            quantidade, nomeCategoria, dificuldade,
-                            tempo, nomeJogador, callback
+
+                    Log.w(
+                            TAG,
+                            "A API retornou menos questões do que o solicitado."
                     );
+
+                    buscarQuestoesOffline(
+                            quantidade,
+                            nomeCategoria,
+                            dificuldade,
+                            tempo,
+                            nomeJogador,
+                            callback
+                    );
+
                     return;
                 }
 
-                salvarCacheEPrepararPartida(
+                Partida partida = criarPartida(
                         questoes,
-                        quantidade,
                         tempo,
-                        nomeJogador,
-                        callback
+                        nomeJogador
                 );
+
+                Log.d(TAG, "Partida preparada com questões da API.");
+
+                callback.onPartidaPreparada(partida, false);
             }
 
             @Override
@@ -309,17 +328,26 @@ public class ConfiguracaoController {
 
                 if (encerrado || call.isCanceled()) return;
 
-                Log.w(TAG, "Falha na busca online. Tentando SQLite.", t);
+                Log.w(
+                        TAG,
+                        "Falha na busca online. Utilizando SQLite.",
+                        t
+                );
 
                 buscarQuestoesOffline(
-                        quantidade, nomeCategoria, dificuldade,
-                        tempo, nomeJogador, callback
+                        quantidade,
+                        nomeCategoria,
+                        dificuldade,
+                        tempo,
+                        nomeJogador,
+                        callback
                 );
             }
         });
     }
 
-    private List<Questao> converterQuestoes(List<QuestaoApi> questoesApi) {
+    private List<Questao> converterQuestoes(
+            List<QuestaoApi> questoesApi) {
 
         List<Questao> questoes = new ArrayList<>();
 
@@ -330,6 +358,7 @@ public class ConfiguracaoController {
                     || questaoApi.getRespostaCorreta() == null
                     || questaoApi.getRespostasIncorretas() == null
                     || questaoApi.getRespostasIncorretas().size() != 3) {
+
                 continue;
             }
 
@@ -345,39 +374,6 @@ public class ConfiguracaoController {
         }
 
         return questoes;
-    }
-
-    private void salvarCacheEPrepararPartida(
-            List<Questao> questoes,
-            int quantidade,
-            int tempo,
-            String nomeJogador,
-            PartidaCallback callback) {
-
-        executorBanco.execute(() -> {
-
-            try {
-                QuestaoRepositorio repositorio =
-                        new QuestaoRepositorio(context);
-
-                repositorio.salvarQuestoesParaOffline(questoes);
-
-                Log.d(TAG, "Questões armazenadas no cache offline.");
-
-            } catch (Exception e) {
-                Log.e(TAG, "Falha ao salvar questões no cache.", e);
-            }
-
-            handler.post(() -> {
-                if (encerrado) return;
-
-                Partida partida = criarPartida(
-                        questoes, tempo, nomeJogador
-                );
-
-                callback.onPartidaPreparada(partida, false);
-            });
-        });
     }
 
     private void buscarQuestoesOffline(
@@ -403,6 +399,7 @@ public class ConfiguracaoController {
                 );
 
             } catch (Exception e) {
+
                 Log.e(TAG, "Erro ao buscar questões no SQLite.", e);
             }
 
@@ -412,23 +409,32 @@ public class ConfiguracaoController {
 
                 if (encerrado) return;
 
-                if (resultado == null || resultado.size() < quantidade) {
+                if (resultado == null
+                        || resultado.size() < quantidade) {
 
                     int disponiveis = resultado == null
-                            ? 0 : resultado.size();
+                            ? 0
+                            : resultado.size();
 
                     callback.onErro(
-                            "Sem conexão ou questões insuficientes no cache "
-                                    + "para essa categoria/dificuldade ("
-                                    + disponiveis + "/" + quantidade + ")."
+                            "Não há questões locais suficientes para "
+                                    + "essa categoria e dificuldade ("
+                                    + disponiveis
+                                    + "/"
+                                    + quantidade
+                                    + ")."
                     );
 
                     return;
                 }
 
                 Partida partida = criarPartida(
-                        resultado, tempo, nomeJogador
+                        resultado,
+                        tempo,
+                        nomeJogador
                 );
+
+                Log.d(TAG, "Partida preparada com questões locais.");
 
                 callback.onPartidaPreparada(partida, true);
             });
@@ -458,20 +464,26 @@ public class ConfiguracaoController {
         switch (codigo) {
             case 1:
                 return "A API não tem questões suficientes nessa configuração.";
+
             case 2:
                 return "Parâmetros inválidos enviados à API.";
+
             case 3:
                 return "Token de sessão não encontrado.";
+
             case 4:
                 return "Token de sessão esgotado.";
+
             case 5:
                 return "Limite de requisições da API atingido.";
+
             default:
                 return "Erro desconhecido ao buscar questões.";
         }
     }
 
     public void encerrar() {
+
         encerrado = true;
 
         if (chamadaCategorias != null) {

@@ -4,231 +4,753 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-
 public final class Seed {
 
     private Seed() {
     }
 
     public static void inserir(SQLiteDatabase db) {
-        inserirConhecimentosGerais(db);
-        inserirCienciaENatureza(db);
-        inserirEsportes(db);
-        inserirHistoria(db);
-        inserirGeografia(db);
-        inserirLivros(db);
-        inserirFilmes(db);
-        inserirMusica(db);
-        inserirTelevisao(db);
-        inserirComputadores(db);
-        inserirMatematica(db);
-        inserirAnimais(db);
-        inserirMitologia(db);
+        inserirCategoria(db, "General Knowledge", QUESTOES_1);
+        inserirCategoria(db, "Science & Nature", QUESTOES_2);
+        inserirCategoria(db, "Sports", QUESTOES_3);
+        inserirCategoria(db, "History", QUESTOES_4);
+        inserirCategoria(db, "Geography", QUESTOES_5);
+        inserirCategoria(db, "Entertainment: Books", QUESTOES_6);
+        inserirCategoria(db, "Entertainment: Film", QUESTOES_7);
+        inserirCategoria(db, "Entertainment: Music", QUESTOES_8);
+        inserirCategoria(db, "Entertainment: Television", QUESTOES_9);
+        inserirCategoria(db, "Science: Computers", QUESTOES_10);
+        inserirCategoria(db, "Science: Mathematics", QUESTOES_11);
+        inserirCategoria(db, "Animals", QUESTOES_12);
+        inserirCategoria(db, "Mythology", QUESTOES_13);
     }
 
-    private static void inserirConhecimentosGerais(SQLiteDatabase db) {
-        int categoria = obterOuCriarCategoria(db, "General Knowledge");
+    private static final String[][] QUESTOES_1 = {
+            {"easy", "Qual é a capital do Japão?", "Tóquio"},
+            {"easy", "Qual é a moeda oficial da Suíça?", "Franco suíço"},
+            {"medium", "Quem escreveu o romance 1984?", "George Orwell"},
+            {"medium", "Em que cidade ocorreram os Jogos Olímpicos de 1896?", "Atenas"},
+            {"hard", "Qual é o maior planeta do Sistema Solar?", "Júpiter"},
+            {"easy", "Qual é a capital do Canadá?", "Ottawa"},
+            {"easy", "Qual idioma é predominante no México?", "Espanhol"},
+            {"medium", "Quantos lados tem um hexágono?", "Seis"},
+            {"medium", "Qual é o metal líquido à temperatura ambiente?", "Mercúrio"},
+            {"hard", "Qual é a moeda do Reino Unido?", "Libra esterlina"},
+            {"easy", "Quem pintou a Mona Lisa?", "Leonardo da Vinci"},
+            {"easy", "Qual é o maior mamífero terrestre?", "Elefante-africano"},
+            {"medium", "Qual país tem formato aproximado de bota?", "Itália"},
+            {"medium", "Qual é a capital de Portugal?", "Lisboa"},
+            {"hard", "Quantos dias tem um ano bissexto?", "366"},
+            {"easy", "Qual é o idioma oficial do Brasil?", "Português"},
+            {"easy", "Qual instrumento mede a temperatura?", "Termômetro"},
+            {"medium", "Qual é o oceano entre África e Austrália?", "Oceano Índico"},
+            {"medium", "Qual é a capital da Argentina?", "Buenos Aires"},
+            {"hard", "Quem escreveu Romeu e Julieta?", "William Shakespeare"},
+            {"easy", "Qual é o maior deserto quente do mundo?", "Saara"},
+            {"easy", "Qual é a moeda do Japão?", "Iene"},
+            {"medium", "Quantas cores há no arco-íris tradicionalmente?", "Sete"},
+            {"medium", "Qual é a capital da Grécia?", "Atenas"},
+            {"hard", "Qual país é conhecido como Terra do Sol Nascente?", "Japão"},
+            {"easy", "Qual é o nome do satélite natural da Terra?", "Lua"},
+            {"easy", "Em qual país fica a Torre Eiffel?", "França"},
+            {"medium", "Qual é a capital da Alemanha?", "Berlim"},
+            {"medium", "Qual é o principal gás do ar atmosférico?", "Nitrogênio"},
+            {"hard", "Quantos minutos há em uma hora?", "60"},
+            {"easy", "Qual é a capital da Espanha?", "Madri"},
+            {"easy", "Qual animal é símbolo da WWF?", "Panda-gigante"},
+            {"medium", "Qual é a moeda oficial dos Estados Unidos?", "Dólar"},
+            {"medium", "Qual continente tem mais países?", "África"},
+            {"hard", "Qual é o maior órgão do corpo humano?", "Pele"},
+            {"easy", "Quem formulou a teoria da relatividade?", "Albert Einstein"},
+            {"easy", "Qual é a capital da Coreia do Sul?", "Seul"},
+            {"medium", "Qual é o idioma oficial da Áustria?", "Alemão"},
+            {"medium", "Quantos anéis há no símbolo olímpico?", "Cinco"},
+            {"hard", "Qual é a capital da Noruega?", "Oslo"},
+            {"easy", "Qual é a capital da Tailândia?", "Bangkok"},
+            {"easy", "Qual é o nome do processo de transformar água em vapor?", "Evaporação"},
+            {"medium", "Qual país presenteou os EUA com a Estátua da Liberdade?", "França"},
+            {"medium", "Qual é a capital da Irlanda?", "Dublin"},
+            {"hard", "Qual é a unidade básica de massa no SI?", "Quilograma"},
+            {"easy", "Qual é a capital da Nova Zelândia?", "Wellington"},
+            {"easy", "Quem é tradicionalmente associado à invenção da imprensa de tipos móveis na Europa?", "Johannes Gutenberg"},
+            {"medium", "Qual é o maior planeta anão conhecido do cinturão de asteroides?", "Ceres"},
+            {"medium", "Qual é a capital da Turquia?", "Ancara"},
+            {"hard", "Qual é a língua oficial do Egito?", "Árabe"},
+    };
 
-        inserirQuestao(db, categoria, "Qual é a capital do Japão?", "easy",
-                "Tóquio", "Seul", "Pequim", "Bangkok");
-        inserirQuestao(db, categoria, "Qual é o maior planeta do Sistema Solar?", "easy",
-                "Júpiter", "Saturno", "Terra", "Netuno");
-        inserirQuestao(db, categoria, "Qual é a moeda oficial da Suíça?", "medium",
-                "Franco suíço", "Euro", "Libra esterlina", "Coroa sueca");
-        inserirQuestao(db, categoria, "Quem escreveu o livro 1984?", "medium",
-                "George Orwell", "Aldous Huxley", "J. R. R. Tolkien", "Ernest Hemingway");
-        inserirQuestao(db, categoria, "Em que cidade ocorreram os primeiros Jogos Olímpicos modernos?", "hard",
-                "Atenas", "Paris", "Londres", "Roma");
+    private static final String[][] QUESTOES_2 = {
+            {"easy", "Qual é a fórmula química da água?", "H2O"},
+            {"easy", "Qual estrela está mais próxima da Terra?", "Sol"},
+            {"medium", "Quantos ossos tem aproximadamente um adulto?", "206"},
+            {"medium", "Como se chama a produção de alimento pelas plantas usando luz?", "Fotossíntese"},
+            {"hard", "Qual é a velocidade aproximada da luz no vácuo em km/s?", "300000"},
+            {"easy", "Qual gás as plantas absorvem na fotossíntese?", "Dióxido de carbono"},
+            {"easy", "Qual gás é liberado na fotossíntese?", "Oxigênio"},
+            {"medium", "Qual é o planeta mais próximo do Sol?", "Mercúrio"},
+            {"medium", "Qual é o planeta conhecido como planeta vermelho?", "Marte"},
+            {"hard", "Qual é o maior órgão interno humano?", "Fígado"},
+            {"easy", "Qual parte da célula contém a maior parte do DNA?", "Núcleo"},
+            {"easy", "Qual é a unidade de força no SI?", "Newton"},
+            {"medium", "Qual é a unidade de energia no SI?", "Joule"},
+            {"medium", "Qual partícula tem carga elétrica negativa?", "Elétron"},
+            {"hard", "Qual partícula tem carga elétrica positiva?", "Próton"},
+            {"easy", "Qual é o pH de uma solução neutra a 25 °C?", "7"},
+            {"easy", "Como se chama a passagem do estado sólido para o líquido?", "Fusão"},
+            {"medium", "Como se chama a passagem do líquido para o gasoso?", "Vaporização"},
+            {"medium", "Qual é o símbolo químico do ouro?", "Au"},
+            {"hard", "Qual é o símbolo químico do ferro?", "Fe"},
+            {"easy", "Qual é o principal componente do Sol?", "Hidrogênio"},
+            {"easy", "Qual camada da atmosfera contém a maior parte do ozônio?", "Estratosfera"},
+            {"medium", "Qual é o nome científico da espécie humana?", "Homo sapiens"},
+            {"medium", "Qual órgão bombeia o sangue?", "Coração"},
+            {"hard", "Qual estrutura celular realiza a respiração celular?", "Mitocôndria"},
+            {"easy", "Qual é o maior osso do corpo humano?", "Fêmur"},
+            {"easy", "Qual vitamina é produzida na pele com ajuda da luz solar?", "Vitamina D"},
+            {"medium", "Qual é o nome do processo de divisão celular que forma duas células semelhantes?", "Mitose"},
+            {"medium", "Qual é a unidade de corrente elétrica?", "Ampere"},
+            {"hard", "Qual é a unidade de frequência?", "Hertz"},
+            {"easy", "Qual é o nome da galáxia onde está o Sistema Solar?", "Via Láctea"},
+            {"easy", "Qual planeta possui os anéis mais destacados?", "Saturno"},
+            {"medium", "Qual é o satélite natural de Marte chamado de maior lua?", "Fobos"},
+            {"medium", "Qual é a camada mais externa da Terra?", "Crosta"},
+            {"hard", "Qual escala mede a acidez?", "Escala de pH"},
+            {"easy", "Qual é o nome do estudo dos seres vivos?", "Biologia"},
+            {"easy", "Qual é o nome do estudo dos fungos?", "Micologia"},
+            {"medium", "Qual é o nome do estudo dos terremotos?", "Sismologia"},
+            {"medium", "Qual é o nome do estudo dos fósseis?", "Paleontologia"},
+            {"hard", "Qual é a unidade de resistência elétrica?", "Ohm"},
+            {"easy", "Qual tipo de rocha se forma pelo resfriamento do magma?", "Ígnea"},
+            {"easy", "Qual é o nome da água em estado gasoso na atmosfera?", "Vapor de água"},
+            {"medium", "Qual é o maior planeta rochoso do Sistema Solar?", "Terra"},
+            {"medium", "Qual é o nome do processo pelo qual animais mantêm temperatura corporal estável?", "Termorregulação"},
+            {"hard", "Qual é o nome da força que atrai corpos com massa?", "Gravidade"},
+            {"easy", "Qual é o principal ácido presente no estômago?", "Ácido clorídrico"},
+            {"easy", "Qual é a molécula que armazena informação genética?", "DNA"},
+            {"medium", "Qual é o nome do pigmento verde das plantas?", "Clorofila"},
+            {"medium", "Qual é a unidade de pressão no SI?", "Pascal"},
+            {"hard", "Qual é a estrela no centro do Sistema Solar?", "Sol"},
+    };
+
+    private static final String[][] QUESTOES_3 = {
+            {"easy", "Quantos jogadores de cada equipe ficam em campo no futebol?", "11"},
+            {"easy", "Quantos pontos vale um lance livre no basquete?", "1"},
+            {"medium", "Qual é a distância oficial de uma maratona em km?", "42,195"},
+            {"medium", "Quantos torneios compõem o Grand Slam de tênis?", "4"},
+            {"hard", "Em que ano ocorreram os primeiros Jogos Olímpicos modernos?", "1896"},
+            {"easy", "Quantos jogadores cada equipe de vôlei tem em quadra?", "6"},
+            {"easy", "Em qual esporte se utiliza um puck?", "Hóquei no gelo"},
+            {"medium", "Quantos sets um jogador precisa vencer em uma partida masculina de Grand Slam?", "3"},
+            {"medium", "Qual país venceu a Copa do Mundo FIFA de 2018?", "França"},
+            {"hard", "Qual país venceu a Copa do Mundo FIFA de 2022?", "Argentina"},
+            {"easy", "Em qual esporte se usa uma cesta e uma bola laranja?", "Basquete"},
+            {"easy", "Quantos pontos vale um touchdown no futebol americano?", "6"},
+            {"medium", "Qual esporte é disputado em Wimbledon?", "Tênis"},
+            {"medium", "Em qual esporte se realiza o movimento chamado ippon?", "Judô"},
+            {"hard", "Qual é a modalidade de corrida com barreiras e água?", "Steeplechase"},
+            {"easy", "Quantos jogadores há em uma equipe de handebol em quadra?", "7"},
+            {"easy", "Qual é a duração regulamentar de uma partida de futebol?", "90 minutos"},
+            {"medium", "Qual cor de cartão representa expulsão no futebol?", "Vermelho"},
+            {"medium", "Qual país é tradicionalmente associado à origem do judô?", "Japão"},
+            {"hard", "Em qual esporte se compete na Fórmula 1?", "Automobilismo"},
+            {"easy", "Qual é o nome do torneio de tênis disputado em Paris no saibro?", "Roland-Garros"},
+            {"easy", "Qual é o nome da prova de ciclismo por etapas realizada na França?", "Tour de France"},
+            {"medium", "Quantos buracos tem uma volta tradicional de golfe?", "18"},
+            {"medium", "Em qual esporte se usa uma prancha e ondas do mar?", "Surfe"},
+            {"hard", "Qual é o objeto usado para rebater no badminton?", "Peteca"},
+            {"easy", "Quantos jogadores de cada equipe jogam polo aquático?", "7"},
+            {"easy", "Qual é a distância de uma piscina olímpica?", "50 metros"},
+            {"medium", "Qual prova combina natação, ciclismo e corrida?", "Triatlo"},
+            {"medium", "Qual é a arte marcial coreana conhecida por seus chutes?", "Taekwondo"},
+            {"hard", "Em qual esporte se usa um florete?", "Esgrima"},
+            {"easy", "Qual país sediou a Copa do Mundo de 2014?", "Brasil"},
+            {"easy", "Qual país sediou os Jogos Olímpicos de 2016?", "Brasil"},
+            {"medium", "Qual é o nome da competição continental de seleções da Europa?", "Eurocopa"},
+            {"medium", "Qual é o nome da competição continental de seleções da América do Sul?", "Copa América"},
+            {"hard", "Qual é a posição do jogador que protege o gol?", "Goleiro"},
+            {"easy", "Quantos pontos vale uma cesta de trás da linha de três no basquete?", "3"},
+            {"easy", "Qual é a superfície tradicional do torneio de Wimbledon?", "Grama"},
+            {"medium", "Qual é o esporte praticado no Tour de France?", "Ciclismo"},
+            {"medium", "Qual é o nome do aparelho usado na ginástica artística para saltos?", "Mesa de salto"},
+            {"hard", "Qual é o esporte associado ao termo xeque-mate?", "Xadrez"},
+            {"easy", "Quantos jogadores por equipe iniciam uma partida de futsal?", "5"},
+            {"easy", "Qual é o nome da prova de atletismo de 100 metros?", "Corrida de velocidade"},
+            {"medium", "Em qual esporte existe a posição de scrum-half?", "Rúgbi"},
+            {"medium", "Qual país é associado à origem do sumô?", "Japão"},
+            {"hard", "Qual é a principal competição de clubes de futebol da Europa?", "Liga dos Campeões"},
+            {"easy", "Qual é o nome do esporte com cavalo e tacos para acertar uma bola?", "Polo"},
+            {"easy", "Qual é a modalidade que combina esqui e tiro?", "Biatlo"},
+            {"medium", "Quantos jogadores de cada equipe atuam no beisebol em campo?", "9"},
+            {"medium", "Qual é o nome do golpe que encerra uma luta de boxe por nocaute?", "Nocaute"},
+            {"hard", "Qual é o nome da corrida de revezamento com bastão?", "Revezamento"},
+    };
+
+    private static final String[][] QUESTOES_4 = {
+            {"easy", "Quem foi o primeiro presidente do Brasil?", "Deodoro da Fonseca"},
+            {"easy", "Em que ano caiu o Muro de Berlim?", "1989"},
+            {"medium", "Qual rio foi central para o Egito Antigo?", "Rio Nilo"},
+            {"medium", "Em que ano terminou a Segunda Guerra Mundial?", "1945"},
+            {"hard", "Em que ano começou a Revolução Francesa?", "1789"},
+            {"easy", "Em que ano o Brasil declarou sua independência?", "1822"},
+            {"easy", "Quem proclamou a República no Brasil?", "Marechal Deodoro da Fonseca"},
+            {"medium", "Em que ano foi abolida a escravidão no Brasil?", "1888"},
+            {"medium", "Quem assinou a Lei Áurea?", "Princesa Isabel"},
+            {"hard", "Qual civilização construiu Machu Picchu?", "Inca"},
+            {"easy", "Quem foi o primeiro imperador romano?", "Augusto"},
+            {"easy", "Em que ano ocorreu a queda do Império Romano do Ocidente?", "476"},
+            {"medium", "Qual cidade foi destruída pela erupção do Vesúvio em 79?", "Pompeia"},
+            {"medium", "Quem liderou a luta pela independência da Índia com resistência não violenta?", "Mahatma Gandhi"},
+            {"hard", "Em que ano começou a Primeira Guerra Mundial?", "1914"},
+            {"easy", "Qual tratado encerrou formalmente a guerra entre Alemanha e Aliados em 1919?", "Tratado de Versalhes"},
+            {"easy", "Quem foi o líder da Revolução Russa de Outubro?", "Vladimir Lenin"},
+            {"medium", "Em que ano ocorreu a Revolução Russa?", "1917"},
+            {"medium", "Qual civilização desenvolveu a escrita cuneiforme?", "Suméria"},
+            {"hard", "Quem foi o primeiro homem a pisar na Lua?", "Neil Armstrong"},
+            {"easy", "Em que ano ocorreu a chegada de Pedro Álvares Cabral ao Brasil?", "1500"},
+            {"easy", "Qual navegador chegou à América em 1492?", "Cristóvão Colombo"},
+            {"medium", "Qual era a capital do Império Bizantino?", "Constantinopla"},
+            {"medium", "Quem foi a rainha do Egito associada a Júlio César e Marco Antônio?", "Cleópatra"},
+            {"hard", "Qual povo construiu as pirâmides de Gizé?", "Egípcios antigos"},
+            {"easy", "Em que ano ocorreu a Revolução Industrial inicialmente na Inglaterra?", "Século XVIII"},
+            {"easy", "Qual documento inglês de 1215 limitou o poder do rei?", "Magna Carta"},
+            {"medium", "Quem foi o líder militar francês coroado imperador em 1804?", "Napoleão Bonaparte"},
+            {"medium", "Em que batalha Napoleão foi derrotado definitivamente em 1815?", "Batalha de Waterloo"},
+            {"hard", "Qual império tinha sua capital em Tenochtitlán?", "Asteca"},
+            {"easy", "Qual cidade foi dividida por um muro durante a Guerra Fria?", "Berlim"},
+            {"easy", "Em que ano foi fundada a Organização das Nações Unidas?", "1945"},
+            {"medium", "Qual país lançou as bombas atômicas sobre Hiroshima e Nagasaki?", "Estados Unidos"},
+            {"medium", "Qual foi o primeiro país a industrializar-se?", "Reino Unido"},
+            {"hard", "Quem foi o primeiro presidente dos Estados Unidos?", "George Washington"},
+            {"easy", "Qual revolução de 1776 levou à independência dos Estados Unidos?", "Revolução Americana"},
+            {"easy", "Qual era o nome do navio de Charles Darwin em sua viagem científica?", "HMS Beagle"},
+            {"medium", "Quem publicou as 95 teses em 1517?", "Martinho Lutero"},
+            {"medium", "Qual movimento cultural europeu valorizou a arte e o pensamento clássico?", "Renascimento"},
+            {"hard", "Qual cidade italiana é frequentemente associada ao início do Renascimento?", "Florença"},
+            {"easy", "Qual faraó teve seu túmulo encontrado por Howard Carter em 1922?", "Tutancâmon"},
+            {"easy", "Qual era a principal cidade-estado da democracia antiga grega?", "Atenas"},
+            {"medium", "Quem foi o líder macedônio que conquistou vastos territórios até a Índia?", "Alexandre, o Grande"},
+            {"medium", "Qual guerra ocorreu entre o Norte e o Sul dos Estados Unidos?", "Guerra Civil Americana"},
+            {"hard", "Em que ano terminou a Guerra Civil Americana?", "1865"},
+            {"easy", "Qual dinastia governou a China durante a construção de grande parte da Grande Muralha?", "Ming"},
+            {"easy", "Qual era a rota comercial que ligava a China ao Mediterrâneo?", "Rota da Seda"},
+            {"medium", "Quem foi o líder sul-africano que se tornou presidente após o apartheid?", "Nelson Mandela"},
+            {"medium", "Em que ano Nelson Mandela foi eleito presidente?", "1994"},
+            {"hard", "Qual conflito ficou conhecido como Guerra dos Cem Anos?", "Conflito entre Inglaterra e França"},
+    };
+
+    private static final String[][] QUESTOES_5 = {
+            {"easy", "Qual é o maior oceano do planeta?", "Oceano Pacífico"},
+            {"easy", "Qual é a capital da Austrália?", "Canberra"},
+            {"medium", "Em qual continente fica o deserto do Saara?", "África"},
+            {"medium", "Em qual cordilheira fica o Everest?", "Himalaia"},
+            {"hard", "Em qual continente fica o Japão?", "Ásia"},
+            {"easy", "Qual é o maior país do mundo em área?", "Rússia"},
+            {"easy", "Qual é o menor país do mundo?", "Vaticano"},
+            {"medium", "Qual é a capital do Egito?", "Cairo"},
+            {"medium", "Qual é a capital do Chile?", "Santiago"},
+            {"hard", "Qual é a capital do Peru?", "Lima"},
+            {"easy", "Qual rio atravessa a cidade de Londres?", "Tâmisa"},
+            {"easy", "Qual rio atravessa Paris?", "Sena"},
+            {"medium", "Qual é a maior ilha do mundo?", "Groenlândia"},
+            {"medium", "Qual é o país mais populoso da América do Sul?", "Brasil"},
+            {"hard", "Qual é a capital da Islândia?", "Reykjavík"},
+            {"easy", "Qual é a capital da China?", "Pequim"},
+            {"easy", "Qual é a capital da Índia?", "Nova Délhi"},
+            {"medium", "Qual é a capital do Marrocos?", "Rabat"},
+            {"medium", "Qual é a capital do Quênia?", "Nairóbi"},
+            {"hard", "Qual é a capital do Canadá?", "Ottawa"},
+            {"easy", "Qual é o ponto mais alto da África?", "Monte Kilimanjaro"},
+            {"easy", "Qual é o maior lago de água doce em volume?", "Lago Baikal"},
+            {"medium", "Qual é o mar entre a Europa e a África?", "Mar Mediterrâneo"},
+            {"medium", "Qual é o país cuja capital é Ancara?", "Turquia"},
+            {"hard", "Qual país tem a cidade de Dubrovnik?", "Croácia"},
+            {"easy", "Qual é a capital da Coreia do Sul?", "Seul"},
+            {"easy", "Qual é a capital da Noruega?", "Oslo"},
+            {"medium", "Qual é a capital da Suécia?", "Estocolmo"},
+            {"medium", "Qual é a capital da Finlândia?", "Helsinque"},
+            {"hard", "Qual é a capital da Dinamarca?", "Copenhague"},
+            {"easy", "Qual é o maior estado brasileiro em área?", "Amazonas"},
+            {"easy", "Qual é a capital do Ceará?", "Fortaleza"},
+            {"medium", "Qual é a capital de Minas Gerais?", "Belo Horizonte"},
+            {"medium", "Qual é a capital do Paraná?", "Curitiba"},
+            {"hard", "Qual é a capital do Pará?", "Belém"},
+            {"easy", "Qual bioma ocupa grande parte do norte do Brasil?", "Amazônia"},
+            {"easy", "Qual é o maior deserto da América do Sul?", "Deserto da Patagônia"},
+            {"medium", "Qual país é atravessado pela linha do Equador e tem Quito como capital?", "Equador"},
+            {"medium", "Qual é a capital da Colômbia?", "Bogotá"},
+            {"hard", "Qual é a capital do Uruguai?", "Montevidéu"},
+            {"easy", "Qual estreito separa a Espanha do Marrocos?", "Estreito de Gibraltar"},
+            {"easy", "Qual canal liga o Mar Mediterrâneo ao Mar Vermelho?", "Canal de Suez"},
+            {"medium", "Qual canal liga os oceanos Atlântico e Pacífico?", "Canal do Panamá"},
+            {"medium", "Qual é a capital da Etiópia?", "Adis Abeba"},
+            {"hard", "Qual país tem como capital Hanói?", "Vietnã"},
+            {"easy", "Qual é a capital da Irlanda?", "Dublin"},
+            {"easy", "Qual é a capital da Bélgica?", "Bruxelas"},
+            {"medium", "Qual é a capital da Áustria?", "Viena"},
+            {"medium", "Qual é a capital da Polônia?", "Varsóvia"},
+            {"hard", "Qual é a capital da Hungria?", "Budapeste"},
+    };
+
+    private static final String[][] QUESTOES_6 = {
+            {"easy", "Quem escreveu 1984?", "George Orwell"},
+            {"easy", "Quem escreveu O Hobbit?", "J. R. R. Tolkien"},
+            {"medium", "Quem criou Sherlock Holmes?", "Arthur Conan Doyle"},
+            {"medium", "Quem escreveu Dom Quixote?", "Miguel de Cervantes"},
+            {"hard", "Quem escreveu O Pequeno Príncipe?", "Antoine de Saint-Exupéry"},
+            {"easy", "Quem escreveu Orgulho e Preconceito?", "Jane Austen"},
+            {"easy", "Quem escreveu Frankenstein?", "Mary Shelley"},
+            {"medium", "Quem escreveu Drácula?", "Bram Stoker"},
+            {"medium", "Quem escreveu Os Miseráveis?", "Victor Hugo"},
+            {"hard", "Quem escreveu A Metamorfose?", "Franz Kafka"},
+            {"easy", "Quem escreveu Crime e Castigo?", "Fiódor Dostoiévski"},
+            {"easy", "Quem escreveu Guerra e Paz?", "Liev Tolstói"},
+            {"medium", "Quem escreveu A Divina Comédia?", "Dante Alighieri"},
+            {"medium", "Quem escreveu Hamlet?", "William Shakespeare"},
+            {"hard", "Quem escreveu Odisseia?", "Homero"},
+            {"easy", "Quem escreveu A Revolução dos Bichos?", "George Orwell"},
+            {"easy", "Quem escreveu Admirável Mundo Novo?", "Aldous Huxley"},
+            {"medium", "Quem escreveu O Processo?", "Franz Kafka"},
+            {"medium", "Quem escreveu Cem Anos de Solidão?", "Gabriel García Márquez"},
+            {"hard", "Quem escreveu O Amor nos Tempos do Cólera?", "Gabriel García Márquez"},
+            {"easy", "Quem escreveu Memórias Póstumas de Brás Cubas?", "Machado de Assis"},
+            {"easy", "Quem escreveu Dom Casmurro?", "Machado de Assis"},
+            {"medium", "Quem escreveu O Cortiço?", "Aluísio Azevedo"},
+            {"medium", "Quem escreveu Vidas Secas?", "Graciliano Ramos"},
+            {"hard", "Quem escreveu Capitães da Areia?", "Jorge Amado"},
+            {"easy", "Quem escreveu A Hora da Estrela?", "Clarice Lispector"},
+            {"easy", "Quem escreveu Grande Sertão: Veredas?", "João Guimarães Rosa"},
+            {"medium", "Quem escreveu Iracema?", "José de Alencar"},
+            {"medium", "Quem escreveu O Guarani?", "José de Alencar"},
+            {"hard", "Quem escreveu Macunaíma?", "Mário de Andrade"},
+            {"easy", "Quem escreveu Harry Potter?", "J. K. Rowling"},
+            {"easy", "Quem escreveu As Crônicas de Nárnia?", "C. S. Lewis"},
+            {"medium", "Quem escreveu Game of Thrones?", "George R. R. Martin"},
+            {"medium", "Quem escreveu Duna?", "Frank Herbert"},
+            {"hard", "Quem escreveu Fundação?", "Isaac Asimov"},
+            {"easy", "Quem escreveu O Nome da Rosa?", "Umberto Eco"},
+            {"easy", "Quem escreveu O Senhor das Moscas?", "William Golding"},
+            {"medium", "Quem escreveu O Apanhador no Campo de Centeio?", "J. D. Salinger"},
+            {"medium", "Quem escreveu Fahrenheit 451?", "Ray Bradbury"},
+            {"hard", "Quem escreveu A Ilha do Tesouro?", "Robert Louis Stevenson"},
+            {"easy", "Quem escreveu Viagem ao Centro da Terra?", "Júlio Verne"},
+            {"easy", "Quem escreveu Vinte Mil Léguas Submarinas?", "Júlio Verne"},
+            {"medium", "Quem escreveu As Aventuras de Tom Sawyer?", "Mark Twain"},
+            {"medium", "Quem escreveu Alice no País das Maravilhas?", "Lewis Carroll"},
+            {"hard", "Quem escreveu O Retrato de Dorian Gray?", "Oscar Wilde"},
+            {"easy", "Quem escreveu A Peste?", "Albert Camus"},
+            {"easy", "Quem escreveu O Velho e o Mar?", "Ernest Hemingway"},
+            {"medium", "Quem escreveu O Sol é para Todos?", "Harper Lee"},
+            {"medium", "Quem escreveu Persépolis?", "Marjane Satrapi"},
+            {"hard", "Quem escreveu O Diário de Anne Frank?", "Anne Frank"},
+    };
+
+    private static final String[][] QUESTOES_7 = {
+            {"easy", "Quem dirigiu Titanic, de 1997?", "James Cameron"},
+            {"easy", "Qual estúdio produziu Toy Story?", "Pixar"},
+            {"medium", "Quem criou Star Wars?", "George Lucas"},
+            {"medium", "Quem dirigiu Tubarão, de 1975?", "Steven Spielberg"},
+            {"hard", "Qual foi o primeiro longa da Pixar?", "Toy Story"},
+            {"easy", "Quem dirigiu Pulp Fiction?", "Quentin Tarantino"},
+            {"easy", "Quem dirigiu O Poderoso Chefão?", "Francis Ford Coppola"},
+            {"medium", "Quem dirigiu A Origem?", "Christopher Nolan"},
+            {"medium", "Quem dirigiu Psicose?", "Alfred Hitchcock"},
+            {"hard", "Quem dirigiu O Senhor dos Anéis: A Sociedade do Anel?", "Peter Jackson"},
+            {"easy", "Qual atriz interpretou Hermione nos filmes de Harry Potter?", "Emma Watson"},
+            {"easy", "Qual ator interpretou Jack em Titanic?", "Leonardo DiCaprio"},
+            {"medium", "Qual atriz interpretou Katniss em Jogos Vorazes?", "Jennifer Lawrence"},
+            {"medium", "Qual ator interpretou Neo em Matrix?", "Keanu Reeves"},
+            {"hard", "Qual ator interpretou Tony Stark no Universo Marvel?", "Robert Downey Jr."},
+            {"easy", "Qual filme venceu o Oscar de melhor filme em 2020?", "Parasita"},
+            {"easy", "Qual filme de animação apresenta Woody e Buzz?", "Toy Story"},
+            {"medium", "Em qual filme aparece o personagem Darth Vader?", "Star Wars"},
+            {"medium", "Qual filme tem o tubarão chamado Bruce?", "Procurando Nemo"},
+            {"hard", "Qual é o nome do reino de Elsa em Frozen?", "Arendelle"},
+            {"easy", "Quem dirigiu O Rei Leão de 1994?", "Roger Allers e Rob Minkoff"},
+            {"easy", "Qual estúdio criou Meu Amigo Totoro?", "Studio Ghibli"},
+            {"medium", "Quem dirigiu A Viagem de Chihiro?", "Hayao Miyazaki"},
+            {"medium", "Qual filme apresenta o arqueólogo Indiana Jones?", "Os Caçadores da Arca Perdida"},
+            {"hard", "Qual ator interpretou Forrest Gump?", "Tom Hanks"},
+            {"easy", "Qual filme de 1999 apresenta a pílula vermelha e a azul?", "Matrix"},
+            {"easy", "Qual diretor criou a trilogia O Cavaleiro das Trevas?", "Christopher Nolan"},
+            {"medium", "Qual filme apresenta o personagem Rocky Balboa?", "Rocky"},
+            {"medium", "Quem dirigiu E.T. - O Extraterrestre?", "Steven Spielberg"},
+            {"hard", "Qual é o nome do robô protagonista de WALL-E?", "WALL-E"},
+            {"easy", "Qual filme se passa no planeta Pandora?", "Avatar"},
+            {"easy", "Quem dirigiu Avatar?", "James Cameron"},
+            {"medium", "Qual filme apresenta o parque Jurassic Park?", "Jurassic Park"},
+            {"medium", "Quem dirigiu O Iluminado?", "Stanley Kubrick"},
+            {"hard", "Qual ator interpretou Coringa em O Cavaleiro das Trevas?", "Heath Ledger"},
+            {"easy", "Qual filme brasileiro venceu o Oscar de melhor filme internacional em 2025?", "Ainda Estou Aqui"},
+            {"easy", "Quem dirigiu Cidade de Deus?", "Fernando Meirelles"},
+            {"medium", "Qual filme brasileiro acompanha Buscapé?", "Cidade de Deus"},
+            {"medium", "Qual atriz protagonizou Barbie em 2023?", "Margot Robbie"},
+            {"hard", "Quem dirigiu Barbie?", "Greta Gerwig"},
+            {"easy", "Qual filme apresenta o personagem Amélie Poulain?", "O Fabuloso Destino de Amélie Poulain"},
+            {"easy", "Quem dirigiu O Grande Hotel Budapeste?", "Wes Anderson"},
+            {"medium", "Qual ator interpreta Ethan Hunt em Missão: Impossível?", "Tom Cruise"},
+            {"medium", "Qual filme tem o personagem Maximus?", "Gladiador"},
+            {"hard", "Quem dirigiu Gladiador?", "Ridley Scott"},
+            {"easy", "Qual filme de animação acompanha uma família de super-heróis?", "Os Incríveis"},
+            {"easy", "Qual filme apresenta o ogro Shrek?", "Shrek"},
+            {"medium", "Qual filme acompanha a jornada de Chihiro?", "A Viagem de Chihiro"},
+            {"medium", "Qual filme tem o personagem Indiana Jones?", "Os Caçadores da Arca Perdida"},
+            {"hard", "Qual longa apresenta o navio Black Pearl?", "Piratas do Caribe"},
+    };
+
+    private static final String[][] QUESTOES_8 = {
+            {"easy", "Qual instrumento tradicionalmente possui 88 teclas?", "Piano"},
+            {"easy", "Qual banda lançou Hey Jude?", "The Beatles"},
+            {"medium", "Em qual país nasceu Beethoven?", "Alemanha"},
+            {"medium", "Quantas cordas tem um violão tradicional?", "6"},
+            {"hard", "Quem compôs A Flauta Mágica?", "Wolfgang Amadeus Mozart"},
+            {"easy", "Quem é conhecido como Rei do Pop?", "Michael Jackson"},
+            {"easy", "Qual cantora lançou o álbum 1989?", "Taylor Swift"},
+            {"medium", "Qual banda lançou Bohemian Rhapsody?", "Queen"},
+            {"medium", "Quem compôs As Quatro Estações?", "Antonio Vivaldi"},
+            {"hard", "Qual instrumento tem quatro cordas e é comum no rock?", "Baixo elétrico"},
+            {"easy", "Qual é o instrumento principal de um baterista?", "Bateria"},
+            {"easy", "Qual família de instrumentos inclui trompete e trombone?", "Metais"},
+            {"medium", "Qual instrumento de cordas é tocado com arco?", "Violino"},
+            {"medium", "Qual compositor ficou conhecido como o Rei do Ragtime?", "Scott Joplin"},
+            {"hard", "Qual gênero musical surgiu no Bronx nos anos 1970?", "Hip-hop"},
+            {"easy", "Qual cantora é conhecida como Rainha do Soul?", "Aretha Franklin"},
+            {"easy", "Qual banda lançou Smells Like Teen Spirit?", "Nirvana"},
+            {"medium", "Quem gravou Like a Rolling Stone?", "Bob Dylan"},
+            {"medium", "Qual artista lançou o álbum Thriller?", "Michael Jackson"},
+            {"hard", "Qual compositor escreveu a Nona Sinfonia?", "Ludwig van Beethoven"},
+            {"easy", "Qual é o nome da voz feminina mais aguda na classificação lírica?", "Soprano"},
+            {"easy", "Qual é o nome da voz masculina mais grave?", "Baixo"},
+            {"medium", "Qual instrumento é associado ao músico Louis Armstrong?", "Trompete"},
+            {"medium", "Qual estilo musical é associado a New Orleans e improvisação?", "Jazz"},
+            {"hard", "Qual banda lançou The Dark Side of the Moon?", "Pink Floyd"},
+            {"easy", "Qual cantora lançou o álbum Lemonade?", "Beyoncé"},
+            {"easy", "Qual artista é conhecido pelo álbum Purple Rain?", "Prince"},
+            {"medium", "Qual banda lançou Wonderwall?", "Oasis"},
+            {"medium", "Qual cantor brasileiro é conhecido como Rei?", "Roberto Carlos"},
+            {"hard", "Qual gênero brasileiro tem origem afro-brasileira e forte percussão?", "Samba"},
+            {"easy", "Qual ritmo musical nasceu na Jamaica e está associado a Bob Marley?", "Reggae"},
+            {"easy", "Qual gênero musical brasileiro é associado a Luiz Gonzaga?", "Baião"},
+            {"medium", "Qual cantora brasileira lançou o álbum Acabou Chorare com os Novos Baianos?", "Baby do Brasil"},
+            {"medium", "Qual compositor brasileiro escreveu Tico-Tico no Fubá?", "Zequinha de Abreu"},
+            {"hard", "Qual instrumento de sopro é comum no forró pé de serra?", "Sanfona"},
+            {"easy", "Qual banda lançou Stairway to Heaven?", "Led Zeppelin"},
+            {"easy", "Qual banda lançou Hotel California?", "Eagles"},
+            {"medium", "Quem compôs o balé O Lago dos Cisnes?", "Piotr Ilitch Tchaikovsky"},
+            {"medium", "Qual compositor escreveu O Cravo Bem-Temperado?", "Johann Sebastian Bach"},
+            {"hard", "Qual instrumento é tocado com baquetas e possui pratos?", "Bateria"},
+            {"easy", "Qual cantora lançou o sucesso Hello em 2015?", "Adele"},
+            {"easy", "Qual artista lançou o álbum Back to Black?", "Amy Winehouse"},
+            {"medium", "Qual banda ficou conhecida por música e visual glam rock com Freddie Mercury?", "Queen"},
+            {"medium", "Qual é o nome do símbolo que eleva uma nota em um semitom?", "Sustenido"},
+            {"hard", "Qual é o nome do símbolo que reduz uma nota em um semitom?", "Bemol"},
+            {"easy", "Qual é a velocidade da música indicada por batidas por minuto?", "BPM"},
+            {"easy", "Qual instrumento de teclado é central na música eletrônica?", "Sintetizador"},
+            {"medium", "Qual gênero musical tem origem no sul dos Estados Unidos e usa banjo?", "Bluegrass"},
+            {"medium", "Qual cantora lançou o álbum Born This Way?", "Lady Gaga"},
+            {"hard", "Qual banda lançou Yellow?", "Coldplay"},
+    };
+
+    private static final String[][] QUESTOES_9 = {
+            {"easy", "Quem criou Os Simpsons?", "Matt Groening"},
+            {"easy", "Qual é o nome do protagonista de Breaking Bad?", "Walter White"},
+            {"medium", "Em qual cidade se passa Friends?", "Nova York"},
+            {"medium", "Qual emissora produziu originalmente Doctor Who?", "BBC"},
+            {"hard", "Quem criou Bob Esponja?", "Stephen Hillenburg"},
+            {"easy", "Qual série acompanha o reino de Westeros?", "Game of Thrones"},
+            {"easy", "Qual é o nome da cafeteria de Friends?", "Central Perk"},
+            {"medium", "Qual personagem diz 'Bazinga!' em The Big Bang Theory?", "Sheldon Cooper"},
+            {"medium", "Qual série apresenta o laboratório de Dexter Morgan?", "Dexter"},
+            {"hard", "Qual série acompanha os irmãos Winchester?", "Supernatural"},
+            {"easy", "Qual é o nome da cidade fictícia de Stranger Things?", "Hawkins"},
+            {"easy", "Qual série apresenta o personagem Eleven?", "Stranger Things"},
+            {"medium", "Qual é o nome do professor de La Casa de Papel?", "O Professor"},
+            {"medium", "Qual série acompanha médicos no hospital Grey Sloan?", "Grey's Anatomy"},
+            {"hard", "Qual é o nome do protagonista de House?", "Gregory House"},
+            {"easy", "Qual série acompanha a família Roy?", "Succession"},
+            {"easy", "Qual série apresenta o personagem Don Draper?", "Mad Men"},
+            {"medium", "Qual série se passa na prisão de Litchfield?", "Orange Is the New Black"},
+            {"medium", "Qual série acompanha a família Shelby?", "Peaky Blinders"},
+            {"hard", "Qual série tem o personagem Geralt de Rívia?", "The Witcher"},
+            {"easy", "Qual é o nome do dragão de Daenerys que dá nome ao título de uma série derivada?", "Drogon"},
+            {"easy", "Qual série apresenta o escritório da Dunder Mifflin?", "The Office"},
+            {"medium", "Qual é o nome do gerente regional em The Office?", "Michael Scott"},
+            {"medium", "Qual série acompanha Ted contando a história aos filhos?", "How I Met Your Mother"},
+            {"hard", "Qual série apresenta o personagem Rick Grimes?", "The Walking Dead"},
+            {"easy", "Qual série animada apresenta a família Griffin?", "Uma Família da Pesada"},
+            {"easy", "Qual série animada apresenta Eric Cartman?", "South Park"},
+            {"medium", "Qual série animada acompanha Finn e Jake?", "Hora de Aventura"},
+            {"medium", "Qual série animada apresenta Mordecai e Rigby?", "Apenas um Show"},
+            {"hard", "Qual desenho tem um gato chamado Tom e um rato chamado Jerry?", "Tom e Jerry"},
+            {"easy", "Qual série brasileira acompanha a família Silva no subúrbio?", "A Grande Família"},
+            {"easy", "Qual série brasileira apresenta o personagem Lineu?", "A Grande Família"},
+            {"medium", "Qual série brasileira dramatiza investigações sobre corrupção política?", "O Mecanismo"},
+            {"medium", "Qual série brasileira se passa em uma penitenciária feminina?", "Carcereiros"},
+            {"hard", "Qual série brasileira acompanha a personagem Rita?", "Sintonia"},
+            {"easy", "Qual reality show coloca participantes em uma casa vigiada?", "Big Brother"},
+            {"easy", "Qual reality culinário é apresentado como competição de chefs amadores?", "MasterChef"},
+            {"medium", "Qual programa de perguntas tem o formato de quem quer ser milionário?", "Quem Quer Ser um Milionário?"},
+            {"medium", "Qual série apresenta a família Addams em uma escola chamada Nunca Mais?", "Wandinha"},
+            {"hard", "Qual série apresenta o personagem Lucifer Morningstar?", "Lucifer"},
+            {"easy", "Qual série de ficção científica apresenta a nave USS Enterprise?", "Star Trek"},
+            {"easy", "Qual série acompanha a equipe da unidade de análise comportamental do FBI?", "Criminal Minds"},
+            {"medium", "Qual série apresenta o personagem Saul Goodman?", "Better Call Saul"},
+            {"medium", "Qual série acompanha o assalto à Casa da Moeda da Espanha?", "La Casa de Papel"},
+            {"hard", "Qual série apresenta o parque temático de dinossauros Westworld?", "Westworld"},
+            {"easy", "Qual série acompanha uma família de espiões e uma criança telepata?", "Spy x Family"},
+            {"easy", "Qual série animada apresenta Aang como Avatar?", "Avatar: A Lenda de Aang"},
+            {"medium", "Qual série apresenta o personagem BoJack Horseman?", "BoJack Horseman"},
+            {"medium", "Qual série acompanha o detetive Sherlock em Londres moderna?", "Sherlock"},
+            {"hard", "Qual série apresenta a personagem Olivia Benson?", "Law & Order: SVU"},
+    };
+
+    private static final String[][] QUESTOES_10 = {
+            {"easy", "O que significa CPU?", "Central Processing Unit"},
+            {"easy", "Qual linguagem estrutura o conteúdo de páginas web?", "HTML"},
+            {"medium", "Qual é a base do sistema binário?", "2"},
+            {"medium", "Qual linguagem é conhecida pela orientação a objetos?", "Java"},
+            {"hard", "Qual memória perde dados sem energia?", "RAM"},
+            {"easy", "O que significa a sigla URL?", "Uniform Resource Locator"},
+            {"easy", "Qual protocolo é usado para transferir páginas web?", "HTTP"},
+            {"medium", "Qual versão segura do HTTP utiliza criptografia TLS?", "HTTPS"},
+            {"medium", "Qual linguagem é usada para consultas em bancos relacionais?", "SQL"},
+            {"hard", "Qual sistema operacional é baseado no kernel Linux?", "Ubuntu"},
+            {"easy", "Qual componente executa instruções de programas?", "Processador"},
+            {"easy", "Qual componente armazena dados permanentemente em um computador?", "SSD"},
+            {"medium", "Qual dispositivo converte energia para os componentes do PC?", "Fonte de alimentação"},
+            {"medium", "Qual memória é normalmente mais rápida: RAM ou disco rígido?", "RAM"},
+            {"hard", "Qual unidade mede a frequência do processador?", "Hertz"},
+            {"easy", "O que significa a sigla GPU?", "Graphics Processing Unit"},
+            {"easy", "Qual linguagem é frequentemente usada para estilizar páginas web?", "CSS"},
+            {"medium", "Qual linguagem é executada nativamente pelo navegador para interatividade?", "JavaScript"},
+            {"medium", "Qual formato é usado para representar dados estruturados em pares chave-valor?", "JSON"},
+            {"hard", "Qual protocolo permite enviar e receber e-mails entre servidores?", "SMTP"},
+            {"easy", "Qual protocolo é usado para resolução de nomes de domínio?", "DNS"},
+            {"easy", "Qual é a sigla de rede local?", "LAN"},
+            {"medium", "Qual dispositivo encaminha pacotes entre redes?", "Roteador"},
+            {"medium", "Qual dispositivo conecta dispositivos em uma rede local com fio?", "Switch"},
+            {"hard", "Qual identificador é associado a uma interface de rede?", "Endereço MAC"},
+            {"easy", "Qual sistema de controle de versão é distribuído?", "Git"},
+            {"easy", "Qual plataforma hospeda repositórios Git?", "GitHub"},
+            {"medium", "Qual comando Git cria uma cópia local de um repositório remoto?", "git clone"},
+            {"medium", "Qual comando Git registra alterações no histórico local?", "git commit"},
+            {"hard", "Qual comando Git envia commits ao repositório remoto?", "git push"},
+            {"easy", "O que significa IDE?", "Integrated Development Environment"},
+            {"easy", "Qual ferramenta é usada para automatizar builds em projetos Java?", "Maven"},
+            {"medium", "Qual máquina virtual executa bytecode Java?", "JVM"},
+            {"medium", "Qual linguagem é compilada para bytecode da JVM?", "Java"},
+            {"hard", "Qual princípio de orientação a objetos restringe acesso direto aos dados?", "Encapsulamento"},
+            {"easy", "Qual estrutura organiza dados em pares chave-valor?", "Map"},
+            {"easy", "Qual estrutura não permite elementos duplicados em Java?", "Set"},
+            {"medium", "Qual estrutura Java segue normalmente a política FIFO?", "Queue"},
+            {"medium", "Qual interface Java representa uma sequência ordenada?", "List"},
+            {"hard", "Qual algoritmo de busca exige dados ordenados?", "Busca binária"},
+            {"easy", "Qual é o nome do modelo de arquitetura com cliente e servidor?", "Cliente-servidor"},
+            {"easy", "Qual código HTTP indica sucesso genérico?", "200"},
+            {"medium", "Qual código HTTP indica recurso não encontrado?", "404"},
+            {"medium", "Qual código HTTP indica erro interno do servidor?", "500"},
+            {"hard", "Qual método HTTP é normalmente usado para obter dados?", "GET"},
+            {"easy", "Qual método HTTP é normalmente usado para criar um recurso?", "POST"},
+            {"easy", "Qual banco de dados relacional é conhecido pelo elefante azul?", "PostgreSQL"},
+            {"medium", "Qual linguagem é usada para criar páginas com marcação?", "HTML"},
+            {"medium", "Qual estrutura de dados segue LIFO?", "Pilha"},
+            {"hard", "Qual componente Android exibe uma tela de aplicativo?", "Activity"},
+    };
+
+    private static final String[][] QUESTOES_11 = {
+            {"easy", "Qual é o menor número primo?", "2"},
+            {"easy", "Qual é a raiz quadrada de 81?", "9"},
+            {"medium", "Qual é a soma dos ângulos internos de um triângulo?", "180 graus"},
+            {"medium", "Qual é o valor aproximado de pi?", "3,14"},
+            {"hard", "Quanto é 12 ao quadrado?", "144"},
+            {"easy", "Quanto é 7 vezes 8?", "56"},
+            {"easy", "Quanto é 15% de 200?", "30"},
+            {"medium", "Qual é o resultado de 144 dividido por 12?", "12"},
+            {"medium", "Qual é o próximo número da sequência 2, 4, 6, 8?", "10"},
+            {"hard", "Quantos graus tem um ângulo reto?", "90 graus"},
+            {"easy", "Qual é o perímetro de um quadrado de lado 5?", "20"},
+            {"easy", "Qual é a área de um quadrado de lado 4?", "16"},
+            {"medium", "Qual é a área de um retângulo de lados 6 e 3?", "18"},
+            {"medium", "Qual é o resultado de 2 elevado a 10?", "1024"},
+            {"hard", "Qual é a raiz cúbica de 27?", "3"},
+            {"easy", "Qual é o único número primo par?", "2"},
+            {"easy", "Qual é o resultado de 0 dividido por 5?", "0"},
+            {"medium", "Quanto é 25% na forma decimal?", "0,25"},
+            {"medium", "Qual fração representa metade?", "1/2"},
+            {"hard", "Quantos lados tem um decágono?", "10"},
+            {"easy", "Qual é a soma dos ângulos internos de um quadrilátero?", "360 graus"},
+            {"easy", "Qual é o nome do polígono de oito lados?", "Octógono"},
+            {"medium", "Qual é o nome do polígono de cinco lados?", "Pentágono"},
+            {"medium", "Qual é o valor de 3 fatorial?", "6"},
+            {"hard", "Qual é o resultado de 9 ao quadrado?", "81"},
+            {"easy", "Qual é a média aritmética de 2, 4 e 6?", "4"},
+            {"easy", "Qual é a mediana de 1, 3 e 9?", "3"},
+            {"medium", "Qual é a probabilidade de sair cara em uma moeda justa?", "1/2"},
+            {"medium", "Qual é o resultado de 5³?", "125"},
+            {"hard", "Qual é o valor de 100 dividido por 4?", "25"},
+            {"easy", "Qual é o número que representa o algarismo romano X?", "10"},
+            {"easy", "Qual é o número que representa o algarismo romano L?", "50"},
+            {"medium", "Qual é o número que representa o algarismo romano C?", "100"},
+            {"medium", "Quanto é 2/3 + 1/3?", "1"},
+            {"hard", "Quanto é 3/4 de 100?", "75"},
+            {"easy", "Qual é a fórmula da área de um círculo?", "πr²"},
+            {"easy", "Qual é o nome do segmento que liga o centro à circunferência?", "Raio"},
+            {"medium", "Qual é o dobro de 37?", "74"},
+            {"medium", "Qual é a metade de 250?", "125"},
+            {"hard", "Quanto é 11 vezes 11?", "121"},
+            {"easy", "Qual é o resultado de 1000 menos 375?", "625"},
+            {"easy", "Qual é o valor absoluto de -8?", "8"},
+            {"medium", "Qual é o oposto aditivo de 12?", "-12"},
+            {"medium", "Qual é o resultado de 4 elevado a 3?", "64"},
+            {"hard", "Qual é a soma de 45 e 55?", "100"},
+            {"easy", "Qual é a unidade de medida de ângulos no sistema mais comum?", "Grau"},
+            {"easy", "Como se chama um triângulo com três lados iguais?", "Equilátero"},
+            {"medium", "Como se chama um triângulo com dois lados iguais?", "Isósceles"},
+            {"medium", "Qual é o nome da reta que divide um ângulo em duas partes iguais?", "Bissetriz"},
+            {"hard", "Qual é o nome do resultado de uma subtração?", "Diferença"},
+    };
+
+    private static final String[][] QUESTOES_12 = {
+            {"easy", "Qual é o maior animal conhecido do planeta?", "Baleia-azul"},
+            {"easy", "Qual é o animal terrestre mais rápido?", "Guepardo"},
+            {"medium", "Como se chama um grupo de leões?", "Alcateia"},
+            {"medium", "Quantos corações tem um polvo?", "3"},
+            {"hard", "A qual grupo pertence o pinguim?", "Aves"},
+            {"easy", "Qual é o maior animal terrestre?", "Elefante-africano"},
+            {"easy", "Qual mamífero põe ovos e possui bico?", "Ornitorrinco"},
+            {"medium", "Qual animal é conhecido por mudar de cor?", "Camaleão"},
+            {"medium", "Qual é o maior felino atualmente?", "Tigre"},
+            {"hard", "Qual animal é conhecido por construir represas?", "Castor"},
+            {"easy", "Qual é o único mamífero capaz de voo verdadeiro?", "Morcego"},
+            {"easy", "Qual animal tem pescoço muito longo?", "Girafa"},
+            {"medium", "Qual animal é símbolo da conservação dos pandas?", "Panda-gigante"},
+            {"medium", "Qual ave é conhecida por imitar sons humanos?", "Papagaio"},
+            {"hard", "Qual animal possui uma bolsa para carregar filhotes?", "Canguru"},
+            {"easy", "Qual é o maior réptil vivo?", "Crocodilo-de-água-salgada"},
+            {"easy", "Qual animal marinho possui oito braços?", "Polvo"},
+            {"medium", "Qual animal marinho tem cinco braços geralmente?", "Estrela-do-mar"},
+            {"medium", "Qual é o peixe conhecido por inflar o corpo?", "Baiacu"},
+            {"hard", "Qual mamífero marinho usa ecolocalização?", "Golfinho"},
+            {"easy", "Qual animal é conhecido por sua tromba?", "Elefante"},
+            {"easy", "Qual inseto produz mel?", "Abelha"},
+            {"medium", "Qual inseto passa por metamorfose de lagarta a adulto?", "Borboleta"},
+            {"medium", "Qual animal é famoso por tecer teias?", "Aranha"},
+            {"hard", "Qual animal é conhecido por dormir de cabeça para baixo?", "Morcego"},
+            {"easy", "Qual é o maior primata?", "Gorila"},
+            {"easy", "Qual animal é parente próximo do camelo e vive nos Andes?", "Lhama"},
+            {"medium", "Qual animal tem listras pretas e brancas?", "Zebra"},
+            {"medium", "Qual ave não voadora é típica da Antártida?", "Pinguim"},
+            {"hard", "Qual ave é a maior do mundo em altura?", "Avestruz"},
+            {"easy", "Qual animal é conhecido por sua carapaça e movimentos lentos?", "Tartaruga"},
+            {"easy", "Qual mamífero possui espinhos e se enrola para se proteger?", "Ouriço-cacheiro"},
+            {"medium", "Qual animal tem língua muito longa para capturar formigas?", "Tamanduá"},
+            {"medium", "Qual animal é conhecido por emitir coaxos?", "Sapo"},
+            {"hard", "Qual anfíbio pode regenerar membros?", "Axolote"},
+            {"easy", "Qual é o maior tubarão do mundo?", "Tubarão-baleia"},
+            {"easy", "Qual peixe é famoso por nadar contra a corrente para desovar?", "Salmão"},
+            {"medium", "Qual animal é conhecido como rei da selva?", "Leão"},
+            {"medium", "Qual mamífero tem listras e vive em florestas africanas?", "Okapi"},
+            {"hard", "Qual animal tem chifres e é associado a rebanhos bovinos?", "Boi"},
+            {"easy", "Qual é o nome do filhote de sapo?", "Girino"},
+            {"easy", "Qual é o nome do grupo de peixes?", "Cardume"},
+            {"medium", "Qual animal é um marsupial australiano que come eucalipto?", "Coala"},
+            {"medium", "Qual animal possui uma língua azul e vive na Austrália?", "Lagarto-de-língua-azul"},
+            {"hard", "Qual ave é símbolo da paz?", "Pomba"},
+            {"easy", "Qual animal é conhecido por armazenar água e gordura em sua corcova?", "Camelo"},
+            {"easy", "Qual mamífero tem focinho alongado e vive em rios amazônicos?", "Boto-cor-de-rosa"},
+            {"medium", "Qual animal é famoso por sua memória e inteligência entre os primatas?", "Chimpanzé"},
+            {"medium", "Qual réptil não possui patas e se locomove rastejando?", "Cobra"},
+            {"hard", "Qual inseto luminoso é conhecido por produzir luz?", "Vaga-lume"},
+    };
+
+    private static final String[][] QUESTOES_13 = {
+            {"easy", "Quem era o principal deus do Olimpo na mitologia grega?", "Zeus"},
+            {"easy", "Qual deus nórdico está associado ao trovão?", "Thor"},
+            {"medium", "Qual deus egípcio tinha cabeça de chacal?", "Anúbis"},
+            {"medium", "Qual criatura tinha corpo humano e cabeça de touro?", "Minotauro"},
+            {"hard", "Qual deusa grega era associada à sabedoria?", "Atena"},
+            {"easy", "Quem era o deus grego dos mares?", "Poseidon"},
+            {"easy", "Quem era o deus grego do submundo?", "Hades"},
+            {"medium", "Qual deusa grega era associada ao amor e à beleza?", "Afrodite"},
+            {"medium", "Quem era o mensageiro dos deuses gregos?", "Hermes"},
+            {"hard", "Qual deus grego era associado à guerra?", "Ares"},
+            {"easy", "Quem era a deusa grega da caça?", "Ártemis"},
+            {"easy", "Qual deus grego era associado à música e à profecia?", "Apolo"},
+            {"medium", "Quem era a rainha dos deuses gregos?", "Hera"},
+            {"medium", "Qual herói grego realizou doze trabalhos?", "Héracles"},
+            {"hard", "Quem matou a Medusa na mitologia grega?", "Perseu"},
+            {"easy", "Qual criatura mitológica tinha corpo de leão e cabeça de águia?", "Grifo"},
+            {"easy", "Qual cão de três cabeças guardava o submundo grego?", "Cérbero"},
+            {"medium", "Qual herói grego participou da Guerra de Troia e tinha um ponto vulnerável no calcanhar?", "Aquiles"},
+            {"medium", "Qual rei lendário transformava em ouro tudo que tocava?", "Midas"},
+            {"hard", "Qual personagem voou perto do Sol com asas de cera?", "Ícaro"},
+            {"easy", "Quem era o principal deus da mitologia nórdica?", "Odin"},
+            {"easy", "Qual deus nórdico é conhecido por sua trapaça?", "Loki"},
+            {"medium", "Qual árvore conecta os mundos na mitologia nórdica?", "Yggdrasil"},
+            {"medium", "Qual é o nome do salão dos guerreiros de Odin?", "Valhala"},
+            {"hard", "Qual criatura nórdica é um lobo monstruoso?", "Fenrir"},
+            {"easy", "Qual deus egípcio era associado ao Sol?", "Rá"},
+            {"easy", "Qual deus egípcio era associado à vida após a morte?", "Osíris"},
+            {"medium", "Qual deusa egípcia era associada à magia e maternidade?", "Ísis"},
+            {"medium", "Qual deus egípcio tinha cabeça de falcão?", "Hórus"},
+            {"hard", "Qual criatura egípcia tinha corpo de leão e cabeça humana?", "Esfinge"},
+            {"easy", "Qual herói romano é associado à fundação lendária de Roma junto com Remo?", "Rômulo"},
+            {"easy", "Qual deus romano corresponde ao grego Zeus?", "Júpiter"},
+            {"medium", "Qual deusa romana corresponde à grega Atena?", "Minerva"},
+            {"medium", "Qual deus romano da guerra corresponde a Ares?", "Marte"},
+            {"hard", "Qual deus romano do mar corresponde a Poseidon?", "Netuno"},
+            {"easy", "Qual criatura grega transformava pessoas em pedra com o olhar?", "Medusa"},
+            {"easy", "Qual cavalo alado nasceu do sangue de Medusa?", "Pégaso"},
+            {"medium", "Qual ser mitológico tinha parte homem e parte cavalo?", "Centauro"},
+            {"medium", "Qual criatura tinha corpo de leão, cauda de escorpião e cabeça humana em algumas tradições?", "Manticora"},
+            {"hard", "Qual ave mitológica renascia das próprias cinzas?", "Fênix"},
+            {"easy", "Qual deus hindu é conhecido como removedor de obstáculos?", "Ganesha"},
+            {"easy", "Qual deus hindu é associado à preservação do universo?", "Vishnu"},
+            {"medium", "Qual deus hindu é associado à destruição e transformação?", "Shiva"},
+            {"medium", "Qual épico hindu narra a guerra entre Pandavas e Kauravas?", "Mahabharata"},
+            {"hard", "Qual herói da mitologia mesopotâmica buscou a imortalidade?", "Gilgamesh"},
+            {"easy", "Qual criatura japonesa é um espírito ou entidade sobrenatural?", "Yōkai"},
+            {"easy", "Qual deus asteca era associado ao Sol e à guerra?", "Huitzilopochtli"},
+            {"medium", "Qual serpente emplumada aparece na mitologia mesoamericana?", "Quetzalcóatl"},
+            {"medium", "Qual deus maia está associado ao céu e à criação em algumas tradições?", "Itzamna"},
+            {"hard", "Qual figura da mitologia grega roubou o fogo dos deuses para os humanos?", "Prometeu"},
+    };
+
+    private static void inserirCategoria(SQLiteDatabase db, String nome, String[][] questoes) {
+        int categoriaId = obterOuCriarCategoria(db, nome);
+        if (categoriaId <= 0) return;
+
+        for (int i = 0; i < questoes.length; i++) {
+            String dificuldade = questoes[i][0];
+            String enunciado = questoes[i][1];
+            String correta = questoes[i][2];
+            String[] incorretas = new String[3];
+            int quantidade = 0;
+
+            // Busca respostas diferentes dentro da própria categoria.
+            for (int deslocamento = 1; deslocamento < questoes.length && quantidade < 3; deslocamento++) {
+                String candidata = questoes[(i + deslocamento) % questoes.length][2];
+                if (!candidata.equals(correta) && !contem(incorretas, quantidade, candidata)) {
+                    incorretas[quantidade++] = candidata;
+                }
+            }
+
+            if (quantidade == 3) {
+                inserirQuestao(db, categoriaId, enunciado, dificuldade, correta,
+                        incorretas[0], incorretas[1], incorretas[2]);
+            }
+        }
     }
 
-    private static void inserirCienciaENatureza(SQLiteDatabase db) {
-        int categoria = obterOuCriarCategoria(db, "Science & Nature");
-
-        inserirQuestao(db, categoria, "Qual é a fórmula química da água?", "easy",
-                "H2O", "CO2", "O2", "NaCl");
-        inserirQuestao(db, categoria, "Qual é a estrela mais próxima da Terra?", "easy",
-                "Sol", "Sirius", "Proxima Centauri", "Alpha Centauri");
-        inserirQuestao(db, categoria, "Quantos ossos tem aproximadamente um adulto humano?", "medium",
-                "206", "201", "208", "212");
-        inserirQuestao(db, categoria, "Como se chama o processo pelo qual as plantas utilizam luz para produzir alimento?", "medium",
-                "Fotossíntese", "Respiração", "Fermentação", "Transpiração");
-        inserirQuestao(db, categoria, "Qual é aproximadamente a velocidade da luz no vácuo, em km/s?", "hard",
-                "300000", "150000", "200000", "450000");
-    }
-
-    private static void inserirEsportes(SQLiteDatabase db) {
-        int categoria = obterOuCriarCategoria(db, "Sports");
-
-        inserirQuestao(db, categoria, "Quantos jogadores de cada equipe ficam em campo no futebol?", "easy",
-                "11", "9", "10", "12");
-        inserirQuestao(db, categoria, "Quantos pontos vale um lance livre no basquete?", "easy",
-                "1", "2", "3", "4");
-        inserirQuestao(db, categoria, "Qual é a distância oficial de uma maratona, em quilômetros?", "medium",
-                "42,195", "40", "41,5", "45");
-        inserirQuestao(db, categoria, "Quantos torneios compõem o Grand Slam de tênis?", "medium",
-                "4", "2", "3", "5");
-        inserirQuestao(db, categoria, "Em que ano foram realizados os primeiros Jogos Olímpicos modernos?", "hard",
-                "1896", "1900", "1888", "1924");
-    }
-
-    private static void inserirHistoria(SQLiteDatabase db) {
-        int categoria = obterOuCriarCategoria(db, "History");
-
-        inserirQuestao(db, categoria, "Quem foi o primeiro presidente do Brasil?", "medium",
-                "Deodoro da Fonseca", "Getúlio Vargas", "Floriano Peixoto", "Dom Pedro II");
-        inserirQuestao(db, categoria, "Em que ano caiu o Muro de Berlim?", "easy",
-                "1989", "1985", "1991", "1979");
-        inserirQuestao(db, categoria, "Qual rio foi fundamental para o desenvolvimento do Egito Antigo?", "easy",
-                "Rio Nilo", "Rio Amazonas", "Rio Tigre", "Rio Danúbio");
-        inserirQuestao(db, categoria, "Em que ano terminou a Segunda Guerra Mundial?", "easy",
-                "1945", "1939", "1942", "1950");
-        inserirQuestao(db, categoria, "Em que ano começou a Revolução Francesa?", "medium",
-                "1789", "1776", "1804", "1815");
-    }
-
-    private static void inserirGeografia(SQLiteDatabase db) {
-        int categoria = obterOuCriarCategoria(db, "Geography");
-
-        inserirQuestao(db, categoria, "Qual é o maior oceano do planeta?", "easy",
-                "Oceano Pacífico", "Oceano Atlântico", "Oceano Índico", "Oceano Ártico");
-        inserirQuestao(db, categoria, "Qual é a capital da Austrália?", "medium",
-                "Canberra", "Sydney", "Melbourne", "Perth");
-        inserirQuestao(db, categoria, "Em qual continente está localizado o deserto do Saara?", "easy",
-                "África", "Ásia", "América do Sul", "Oceania");
-        inserirQuestao(db, categoria, "Em qual cordilheira está localizado o Monte Everest?", "medium",
-                "Himalaia", "Andes", "Alpes", "Montanhas Rochosas");
-        inserirQuestao(db, categoria, "Em qual continente fica o Japão?", "easy",
-                "Ásia", "Europa", "África", "América do Norte");
-    }
-
-    private static void inserirLivros(SQLiteDatabase db) {
-        int categoria = obterOuCriarCategoria(db, "Entertainment: Books");
-
-        inserirQuestao(db, categoria, "Quem escreveu o livro 1984?", "easy",
-                "George Orwell", "Aldous Huxley", "Ernest Hemingway", "Charles Dickens");
-        inserirQuestao(db, categoria, "Quem escreveu O Hobbit?", "easy",
-                "J. R. R. Tolkien", "C. S. Lewis", "George R. R. Martin", "J. K. Rowling");
-        inserirQuestao(db, categoria, "Quem criou o personagem Sherlock Holmes?", "medium",
-                "Arthur Conan Doyle", "Agatha Christie", "Edgar Allan Poe", "Júlio Verne");
-        inserirQuestao(db, categoria, "Quem escreveu Dom Quixote?", "medium",
-                "Miguel de Cervantes", "William Shakespeare", "Victor Hugo", "Machado de Assis");
-        inserirQuestao(db, categoria, "Quem escreveu O Pequeno Príncipe?", "easy",
-                "Antoine de Saint-Exupéry", "Jules Verne", "Victor Hugo", "Albert Camus");
-    }
-
-    private static void inserirFilmes(SQLiteDatabase db) {
-        int categoria = obterOuCriarCategoria(db, "Entertainment: Film");
-
-        inserirQuestao(db, categoria, "Quem dirigiu o filme Titanic, lançado em 1997?", "easy",
-                "James Cameron", "Steven Spielberg", "Christopher Nolan", "Ridley Scott");
-        inserirQuestao(db, categoria, "Qual estúdio produziu o filme Toy Story?", "easy",
-                "Pixar", "DreamWorks", "Studio Ghibli", "Warner Bros.");
-        inserirQuestao(db, categoria, "Quem criou a franquia Star Wars?", "medium",
-                "George Lucas", "Stanley Kubrick", "James Cameron", "Peter Jackson");
-        inserirQuestao(db, categoria, "Quem dirigiu o filme Tubarão, lançado em 1975?", "medium",
-                "Steven Spielberg", "James Cameron", "Francis Ford Coppola", "Tim Burton");
-        inserirQuestao(db, categoria, "Qual foi o primeiro longa-metragem de animação produzido pela Pixar?", "hard",
-                "Toy Story", "Monstros S.A.", "Procurando Nemo", "Vida de Inseto");
-    }
-
-    private static void inserirMusica(SQLiteDatabase db) {
-        int categoria = obterOuCriarCategoria(db, "Entertainment: Music");
-
-        inserirQuestao(db, categoria, "Qual instrumento musical tradicionalmente possui 88 teclas?", "easy",
-                "Piano", "Violino", "Flauta", "Violoncelo");
-        inserirQuestao(db, categoria, "Qual banda lançou a música Hey Jude?", "easy",
-                "The Beatles", "Queen", "The Rolling Stones", "Pink Floyd");
-        inserirQuestao(db, categoria, "Em qual país nasceu Ludwig van Beethoven?", "medium",
-                "Alemanha", "Áustria", "França", "Itália");
-        inserirQuestao(db, categoria, "Quantas cordas possui um violão tradicional de seis cordas?", "easy",
-                "6", "4", "5", "8");
-        inserirQuestao(db, categoria, "Qual compositor criou a ópera A Flauta Mágica?", "hard",
-                "Wolfgang Amadeus Mozart", "Johann Sebastian Bach", "Frédéric Chopin", "Ludwig van Beethoven");
-    }
-
-    private static void inserirTelevisao(SQLiteDatabase db) {
-        int categoria = obterOuCriarCategoria(db, "Entertainment: Television");
-
-        inserirQuestao(db, categoria, "Quem criou a série Os Simpsons?", "medium",
-                "Matt Groening", "Seth MacFarlane", "Trey Parker", "Mike Judge");
-        inserirQuestao(db, categoria, "Qual é o nome do protagonista de Breaking Bad?", "easy",
-                "Walter White", "Saul Goodman", "Jesse Pinkman", "Hank Schrader");
-        inserirQuestao(db, categoria, "Em qual cidade se passa principalmente a série Friends?", "easy",
-                "Nova York", "Los Angeles", "Chicago", "Boston");
-        inserirQuestao(db, categoria, "Qual emissora britânica produziu originalmente Doctor Who?", "hard",
-                "BBC", "ITV", "Channel 4", "Sky");
-        inserirQuestao(db, categoria, "Quem criou o desenho Bob Esponja?", "medium",
-                "Stephen Hillenburg", "Walt Disney", "Genndy Tartakovsky", "Craig McCracken");
-    }
-
-    private static void inserirComputadores(SQLiteDatabase db) {
-        int categoria = obterOuCriarCategoria(db, "Science: Computers");
-
-        inserirQuestao(db, categoria, "O que significa a sigla CPU?", "easy",
-                "Central Processing Unit", "Computer Personal Unit", "Central Program Utility", "Computer Processing Utility");
-        inserirQuestao(db, categoria, "Qual linguagem é utilizada para estruturar o conteúdo de páginas web?", "easy",
-                "HTML", "SQL", "Python", "C");
-        inserirQuestao(db, categoria, "Qual destes sistemas numéricos é utilizado como base na representação binária?", "easy",
-                "Base 2", "Base 8", "Base 10", "Base 16");
-        inserirQuestao(db, categoria, "Qual destas linguagens é conhecida por utilizar orientação a objetos?", "medium",
-                "Java", "HTML", "CSS", "SQL");
-        inserirQuestao(db, categoria, "Qual tipo de memória perde seus dados quando o computador é desligado?", "medium",
-                "RAM", "SSD", "ROM", "Disco rígido");
-    }
-
-    private static void inserirMatematica(SQLiteDatabase db) {
-        int categoria = obterOuCriarCategoria(db, "Science: Mathematics");
-
-        inserirQuestao(db, categoria, "Qual é o menor número primo?", "easy",
-                "2", "1", "3", "0");
-        inserirQuestao(db, categoria, "Qual é a raiz quadrada de 81?", "easy",
-                "9", "8", "7", "10");
-        inserirQuestao(db, categoria, "Qual é a soma dos ângulos internos de um triângulo?", "medium",
-                "180 graus", "90 graus", "270 graus", "360 graus");
-        inserirQuestao(db, categoria, "Qual é o valor aproximado de Pi?", "easy",
-                "3,14", "2,14", "4,13", "3,41");
-        inserirQuestao(db, categoria, "Quanto é 12 elevado ao quadrado?", "medium",
-                "144", "124", "132", "156");
-    }
-
-    private static void inserirAnimais(SQLiteDatabase db) {
-        int categoria = obterOuCriarCategoria(db, "Animals");
-
-        inserirQuestao(db, categoria, "Qual é o maior animal conhecido do planeta?", "easy",
-                "Baleia-azul", "Elefante-africano", "Tubarão-branco", "Girafa");
-        inserirQuestao(db, categoria, "Qual é o animal terrestre mais rápido?", "easy",
-                "Guepardo", "Leão", "Cavalo", "Leopardo");
-        inserirQuestao(db, categoria, "Como é chamado um grupo de leões?", "medium",
-                "Alcateia", "Manada", "Cardume", "Rebanho");
-        inserirQuestao(db, categoria, "Quantos corações possui um polvo?", "hard",
-                "3", "1", "2", "4");
-        inserirQuestao(db, categoria, "A qual grupo de animais pertence o pinguim?", "easy",
-                "Aves", "Mamíferos", "Répteis", "Anfíbios");
-    }
-
-    private static void inserirMitologia(SQLiteDatabase db) {
-        int categoria = obterOuCriarCategoria(db, "Mythology");
-
-        inserirQuestao(db, categoria, "Quem era o principal deus do Olimpo na mitologia grega?", "easy",
-                "Zeus", "Poseidon", "Ares", "Hermes");
-        inserirQuestao(db, categoria, "Qual deus da mitologia nórdica está associado ao trovão?", "easy",
-                "Thor", "Loki", "Odin", "Baldur");
-        inserirQuestao(db, categoria, "Qual deus egípcio era representado com cabeça de chacal?", "medium",
-                "Anúbis", "Rá", "Osíris", "Hórus");
-        inserirQuestao(db, categoria, "Qual criatura mitológica tinha corpo humano e cabeça de touro?", "medium",
-                "Minotauro", "Centauro", "Grifo", "Cérbero");
-        inserirQuestao(db, categoria, "Qual deusa grega era associada à sabedoria?", "easy",
-                "Atena", "Afrodite", "Hera", "Ártemis");
+    private static boolean contem(String[] valores, int quantidade, String valor) {
+        for (int i = 0; i < quantidade; i++) {
+            if (valores[i].equals(valor)) return true;
+        }
+        return false;
     }
 
     private static int obterOuCriarCategoria(SQLiteDatabase db, String nome) {
         try (Cursor cursor = db.query(
-                "categoria",
-                new String[]{"id"},
-                "nome = ?",
-                new String[]{nome},
-                null, null, null)) {
-
+                "categoria", new String[]{"id"}, "nome = ?",
+                new String[]{nome}, null, null, null)) {
             if (cursor.moveToFirst()) {
                 return cursor.getInt(cursor.getColumnIndexOrThrow("id"));
             }
@@ -236,31 +758,20 @@ public final class Seed {
 
         ContentValues valores = new ContentValues();
         valores.put("nome", nome);
-
         long id = db.insert("categoria", null, valores);
         return id == -1 ? -1 : (int) id;
     }
 
     private static void inserirQuestao(
-            SQLiteDatabase db,
-            int categoriaId,
-            String enunciado,
-            String dificuldade,
-            String correta,
-            String incorreta1,
-            String incorreta2,
-            String incorreta3) {
-
+            SQLiteDatabase db, int categoriaId, String enunciado, String dificuldade,
+            String correta, String incorreta1, String incorreta2, String incorreta3) {
         if (categoriaId <= 0) return;
 
         try (Cursor cursor = db.query(
-                "questao",
-                new String[]{"id"},
+                "questao", new String[]{"id"},
                 "enunciado = ? AND categoria_id = ?",
                 new String[]{enunciado, String.valueOf(categoriaId)},
-                null, null, null,
-                "1")) {
-
+                null, null, null, "1")) {
             if (cursor.moveToFirst()) return;
         }
 
@@ -273,7 +784,6 @@ public final class Seed {
         valores.put("resposta_incorreta_1", incorreta1);
         valores.put("resposta_incorreta_2", incorreta2);
         valores.put("resposta_incorreta_3", incorreta3);
-
         db.insert("questao", null, valores);
     }
 }
